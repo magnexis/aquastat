@@ -14,6 +14,8 @@ def test_control_center_shell_renders() -> None:
     assert response.status_code == 200
     assert "AquaStat Control Center" in response.text
     assert "Interactive Calculation Workspace" in response.text
+    assert 'fetch("/api/v1/billing/projects", { headers: headers(true) })' in response.text
+    assert 'fetch(`/api/v1/billing/projects/${item.id}/usage`, { headers: headers(true) })' in response.text
 
 
 def test_version_and_health_variants_work() -> None:

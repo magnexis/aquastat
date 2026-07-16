@@ -5,6 +5,13 @@ on:
     branches: ["main"]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -37,6 +44,9 @@ jobs:
 
       - name: Lint
         run: flake8 app tests scripts --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Billing security regression tests
+        run: pytest tests/test_billing_foundation.py -k "quota_summary_for_managed_key or billing_projects_usage_and_csv_export or square_webhook_completes_checkout"
 
       - name: Run tests
         run: pytest

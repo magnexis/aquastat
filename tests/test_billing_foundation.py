@@ -37,26 +37,35 @@ def test_checkout_session_and_quota_summary_for_managed_key() -> None:
                 "usage_limit": 1000,
             },
         )
+        assert created.status_code == 200
+        key_record = created.json()["record"]
+        checkout = client.post(
+            "/api/v1/billing/checkout-sessions",
+            json={"package_slug": "starter-refill", "target_api_key_id": key_record["id"], "client_request_id": "cli-1"},
+        )
+        assert checkout.status_code == 200
+        checkout_payload = checkout.json()
+        assert checkout_payload["package_slug"] == "starter-refill"
+        assert checkout_payload["target_api_key_prefix"] == key_record["prefix"]
+
+        summary = client.get(f"/api/v1/billing/quota/{key_record['id']}")
+        assert summary.status_code == 403
+
+        summary = client.get(f"/api/v1/billing/quota/{key_record['id']}", headers={"X-API-Key": admin_key})
+        assert summary.status_code == 200
+        summary_payload = summary.json()
+        assert summary_payload["api_key_id"] == key_record["id"]
+        assert summary_payload["included_requests"] == 1000
+        assert summary_payload["total_remaining_requests"] >= 1000
+
+        checkout_lookup = client.get(
+            f"/api/v1/billing/checkout-sessions/{checkout_payload['session_id']}",
+            headers={"X-API-Key": admin_key},
+        )
+        assert checkout_lookup.status_code == 200
+        assert checkout_lookup.json()["session_id"] == checkout_payload["session_id"]
     finally:
         settings.admin_api_key_hashes = original_admin
-
-    assert created.status_code == 200
-    key_record = created.json()["record"]
-    checkout = client.post(
-        "/api/v1/billing/checkout-sessions",
-        json={"package_slug": "starter-refill", "target_api_key_id": key_record["id"], "client_request_id": "cli-1"},
-    )
-    assert checkout.status_code == 200
-    checkout_payload = checkout.json()
-    assert checkout_payload["package_slug"] == "starter-refill"
-    assert checkout_payload["target_api_key_prefix"] == key_record["prefix"]
-
-    summary = client.get(f"/api/v1/billing/quota/{key_record['id']}")
-    assert summary.status_code == 200
-    summary_payload = summary.json()
-    assert summary_payload["api_key_id"] == key_record["id"]
-    assert summary_payload["included_requests"] == 1000
-    assert summary_payload["total_remaining_requests"] >= 1000
 
 
 def test_billing_projects_usage_and_csv_export() -> None:
@@ -102,19 +111,32 @@ def test_billing_projects_usage_and_csv_export() -> None:
             json={"api_key_id": key_record["id"], "package_slug": "starter-refill", "requests_granted": 20},
         )
         assert grant.status_code == 200
+        projects_forbidden = client.get("/api/v1/billing/projects")
+        assert projects_forbidden.status_code == 403
+
+        usage = client.get(f"/api/v1/billing/projects/{project_payload['id']}/usage")
+        assert usage.status_code == 403
+
+        project_detail = client.get(f"/api/v1/billing/projects/{project_payload['id']}", headers={"X-API-Key": admin_key})
+        assert project_detail.status_code == 200
+        assert project_detail.json()["id"] == project_payload["id"]
+
+        project_list = client.get("/api/v1/billing/projects", headers={"X-API-Key": admin_key})
+        assert project_list.status_code == 200
+        assert project_list.json()["total"] >= 1
+
+        usage = client.get(f"/api/v1/billing/projects/{project_payload['id']}/usage", headers={"X-API-Key": admin_key})
+        assert usage.status_code == 200
+        usage_payload = usage.json()
+        assert usage_payload["project"]["id"] == project_payload["id"]
+        assert usage_payload["keys_total"] >= 1
+        assert usage_payload["usage"]["prepaid_remaining_requests"] >= 20
+
+        csv_export = client.get(f"/api/v1/billing/projects/{project_payload['id']}/usage.csv", headers={"X-API-Key": admin_key})
+        assert csv_export.status_code == 200
+        assert "project_id,project_name,api_key_id" in csv_export.text
     finally:
         settings.admin_api_key_hashes = original_admin
-
-    usage = client.get(f"/api/v1/billing/projects/{project_payload['id']}/usage")
-    assert usage.status_code == 200
-    usage_payload = usage.json()
-    assert usage_payload["project"]["id"] == project_payload["id"]
-    assert usage_payload["keys_total"] >= 1
-    assert usage_payload["usage"]["prepaid_remaining_requests"] >= 20
-
-    csv_export = client.get(f"/api/v1/billing/projects/{project_payload['id']}/usage.csv")
-    assert csv_export.status_code == 200
-    assert "project_id,project_name,api_key_id" in csv_export.text
 
 
 def test_prepaid_credits_are_consumed_before_included_quota() -> None:
@@ -172,7 +194,7 @@ def test_prepaid_credits_are_consumed_before_included_quota() -> None:
     assert first.status_code == 200
     assert second.status_code == 200
 
-    usage = client.get(f"/api/v1/billing/projects/{project_id}/usage")
+    usage = client.get(f"/api/v1/billing/projects/{project_id}/usage", headers={"X-API-Key": admin_key})
     assert usage.status_code == 200
     usage_payload = usage.json()
     assert usage_payload["usage"]["prepaid_remaining_requests"] == 0
@@ -242,14 +264,13 @@ def test_square_webhook_completes_checkout_and_issues_prepaid_grant() -> None:
         )
         assert webhook.status_code == 200
         assert webhook.json()["grant_issued"] is True
+        usage = client.get(f"/api/v1/billing/projects/{project_id}/usage", headers={"X-API-Key": admin_key})
+        assert usage.status_code == 200
+        assert usage.json()["usage"]["prepaid_remaining_requests"] >= 5000
     finally:
         settings.admin_api_key_hashes = original_admin
         settings.square_webhook_signature_key = original_signature
         settings.square_webhook_notification_url = original_notification_url
-
-    usage = client.get(f"/api/v1/billing/projects/{project_id}/usage")
-    assert usage.status_code == 200
-    assert usage.json()["usage"]["prepaid_remaining_requests"] >= 5000
 
 
 def test_square_payment_created_webhook_is_accepted_without_grant() -> None:

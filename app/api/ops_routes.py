@@ -557,7 +557,7 @@ CONTROL_CENTER_HTML = """
     }
 
     async function loadBillingProjects() {
-      const response = await fetch("/api/v1/billing/projects");
+      const response = await fetch("/api/v1/billing/projects", { headers: headers(true) });
       const payload = await response.json();
       billingProjectsGrid.innerHTML = payload.items.map((item) =>
         `<article class="metric"><div class="label">${item.name}</div><div class="value">${item.subscription ? item.subscription.plan_name : "No plan"}</div><div class="label">${item.currency} budget ${item.monthly_budget_minor ?? 0}</div></article>`
@@ -565,7 +565,11 @@ CONTROL_CENTER_HTML = """
       if (!payload.items.length) {
         billingProjectsGrid.innerHTML = '<div class="status">No billing projects created yet.</div>';
       }
-      const usageResponses = await Promise.all(payload.items.map((item) => fetch(`/api/v1/billing/projects/${item.id}/usage`).then((res) => res.json())));
+      const usageResponses = await Promise.all(
+        payload.items.map((item) =>
+          fetch(`/api/v1/billing/projects/${item.id}/usage`, { headers: headers(true) }).then((res) => res.json())
+        )
+      );
       const alerts = usageResponses.flatMap((item) => item.alerts || []);
       billingOutput.textContent = JSON.stringify({ projects: payload.total, alerts }, null, 2);
     }

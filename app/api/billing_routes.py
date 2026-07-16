@@ -42,7 +42,7 @@ async def get_billing_packages() -> BillingPackagesEnvelope:
 
 
 @router.get("/billing/projects", response_model=BillingProjectsEnvelope, tags=["billing"])
-async def get_billing_projects() -> BillingProjectsEnvelope:
+async def get_billing_projects(_: str = Depends(require_admin_api_key)) -> BillingProjectsEnvelope:
     items = [BillingProjectResponse.model_validate(item | {"subscription": item.get("subscription")}) for item in [await get_project(row["id"]) for row in await list_projects()]]
     plans = [
         {
@@ -66,17 +66,17 @@ async def post_billing_project(
 
 
 @router.get("/billing/projects/{project_id}", response_model=BillingProjectResponse, tags=["billing"])
-async def get_billing_project(project_id: str) -> BillingProjectResponse:
+async def get_billing_project(project_id: str, _: str = Depends(require_admin_api_key)) -> BillingProjectResponse:
     return BillingProjectResponse.model_validate(await get_project(project_id))
 
 
 @router.get("/billing/projects/{project_id}/usage", response_model=BillingProjectUsageResponse, tags=["billing"])
-async def get_billing_project_usage(project_id: str) -> BillingProjectUsageResponse:
+async def get_billing_project_usage(project_id: str, _: str = Depends(require_admin_api_key)) -> BillingProjectUsageResponse:
     return BillingProjectUsageResponse.model_validate(await project_usage_summary(project_id))
 
 
 @router.get("/billing/projects/{project_id}/usage.csv", response_class=PlainTextResponse, tags=["billing"])
-async def get_billing_project_usage_csv(project_id: str) -> PlainTextResponse:
+async def get_billing_project_usage_csv(project_id: str, _: str = Depends(require_admin_api_key)) -> PlainTextResponse:
     return PlainTextResponse(
         content=await export_project_usage_csv(project_id),
         media_type="text/csv",
@@ -111,7 +111,7 @@ async def post_square_webhook(
 
 
 @router.get("/billing/quota/{api_key_id}", response_model=BillingQuotaResponse, tags=["billing"])
-async def get_billing_quota(api_key_id: str) -> BillingQuotaResponse:
+async def get_billing_quota(api_key_id: str, _: str = Depends(require_admin_api_key)) -> BillingQuotaResponse:
     return BillingQuotaResponse.model_validate(await quota_summary(api_key_id))
 
 
@@ -123,5 +123,5 @@ async def post_checkout_session(payload: CreateCheckoutSessionRequest) -> Checko
 
 
 @router.get("/billing/checkout-sessions/{session_id}", response_model=CheckoutSessionResponse, tags=["billing"])
-async def get_checkout_session_route(session_id: str) -> CheckoutSessionResponse:
+async def get_checkout_session_route(session_id: str, _: str = Depends(require_admin_api_key)) -> CheckoutSessionResponse:
     return CheckoutSessionResponse.model_validate(await get_checkout_session(session_id))
