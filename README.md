@@ -1,10 +1,17 @@
-# AquaStat API
+<p align="center">
+  <img src="docs/assets/aquastat-logo.svg" alt="AquaStat logo" width="720">
+</p>
 
-[![CI](https://github.com/magnexis/aquastat/actions/workflows/ci.yml/badge.svg)](https://github.com/magnexis/aquastat/actions/workflows/ci.yml)
-[![Docs](https://github.com/magnexis/aquastat/actions/workflows/docs.yml/badge.svg)](https://github.com/magnexis/aquastat/actions/workflows/docs.yml)
-[![Release](https://img.shields.io/github/v/release/magnexis/aquastat?display_name=tag)](https://github.com/magnexis/aquastat/releases)
-[![License](https://img.shields.io/github/license/magnexis/aquastat)](https://github.com/magnexis/aquastat/blob/main/LICENSE)
-[![OpenAPI 3.1](https://img.shields.io/badge/OpenAPI-3.1-0f766e)](https://github.com/magnexis/aquastat/blob/main/openapi/openapi.yaml)
+<p align="center">
+  <a href="https://github.com/magnexis/aquastat/actions/workflows/ci.yml"><img src="https://github.com/magnexis/aquastat/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/magnexis/aquastat/actions/workflows/docs.yml"><img src="https://github.com/magnexis/aquastat/actions/workflows/docs.yml/badge.svg" alt="Docs"></a>
+  <a href="https://github.com/magnexis/aquastat/releases"><img src="https://img.shields.io/github/v/release/magnexis/aquastat?display_name=tag" alt="Release"></a>
+  <a href="https://github.com/magnexis/aquastat/blob/main/LICENSE"><img src="https://img.shields.io/github/license/magnexis/aquastat" alt="License"></a>
+  <a href="https://github.com/magnexis/aquastat/blob/main/openapi/openapi.yaml"><img src="https://img.shields.io/badge/OpenAPI-3.1-0f766e" alt="OpenAPI 3.1"></a>
+  <img src="https://img.shields.io/badge/Render-Live-46E3B7" alt="Render Live">
+</p>
+
+# AquaStat API
 
 AquaStat is a transparent data-center water intelligence API.
 
@@ -25,22 +32,22 @@ Limitation:
 AquaStat is a research and estimation platform. Facility records may be synthetic, incomplete, conflicting, outdated, or based on public-planning-style documents rather than verified operational measurements. AquaStat results are not regulatory findings or audited disclosures.
 
 Control Center:
-Pending Render deployment
+`https://aquastat-api.onrender.com/api/v1/control-center`
 
 Production API:
-Pending Render deployment
+`https://aquastat-api.onrender.com`
 
 Interactive documentation:
-Pending Render deployment
+`https://aquastat-api.onrender.com/docs`
 
 OpenAPI:
-Pending Render deployment
+`https://aquastat-api.onrender.com/openapi.json`
 
 OpenAPI YAML:
-Pending Render deployment
+`https://aquastat-api.onrender.com/openapi.yaml`
 
 Health:
-Pending Render deployment
+`https://aquastat-api.onrender.com/health`
 
 GitHub Pages:
 `https://magnexis.github.io/aquastat/`
@@ -50,6 +57,14 @@ GitHub Pages OpenAPI:
 
 GitHub Pages OpenAPI YAML:
 `https://magnexis.github.io/aquastat/openapi.yaml`
+
+## Desktop App Preview
+
+The repository includes a local-first TypeScript desktop shell for facility review and public-record workflows.
+
+![AquaStat desktop overview](docs/assets/desktop-overview.svg)
+
+![AquaStat desktop public records and contradiction review](docs/assets/desktop-records.svg)
 
 ## What Problem It Solves
 
@@ -183,6 +198,8 @@ Open the backend-served control center at `/control-center`. It uses AquaStat en
 
 ## Local Development
 
+### API setup
+
 ```bash
 python -m venv .venv
 . .venv/Scripts/activate
@@ -198,13 +215,30 @@ Run tests:
 pytest
 ```
 
+### Desktop app setup
+
+The desktop shell expects the API to be running locally at `http://127.0.0.1:8080`.
+
+```bash
+cd desktop
+npm install
+npm run build
+```
+
+Then open the compiled shell in a browser or lightweight desktop wrapper:
+
+1. Start the API locally.
+2. Build the desktop package with `npm run build`.
+3. Open `desktop/index.html` in your preferred local wrapper or browser.
+4. Use [DESKTOP_APP.md](/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/DESKTOP_APP.md) for the desktop-specific workflow notes.
+
 ## Render Deployment
 
 - Config: [render.yaml](/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/render.yaml)
 - Guide: [docs/deployment-render.md](/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/docs/deployment-render.md)
 
 Current hosted status:
-Render deployment is prepared in-repo but not yet verified from this environment because no authenticated Render deployment session or API token is available here.
+Render deployment is live and verified at `https://aquastat-api.onrender.com`.
 
 To enable durable control-center state in production, install the normal database dependencies and apply [sql/schema.sql](/abs/path/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/sql/schema.sql) before expecting request history, managed keys, and audit events to persist across restarts.
 

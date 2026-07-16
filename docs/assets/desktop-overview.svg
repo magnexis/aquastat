@@ -1,0 +1,54 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="900" fill="#EEF7F8"/>
+  <rect x="48" y="48" width="1344" height="804" rx="30" fill="#F9FDFC" stroke="#CFE3E1" stroke-width="2"/>
+  <rect x="78" y="78" width="1284" height="744" rx="26" fill="#FFFFFF"/>
+  <rect x="112" y="112" width="1216" height="212" rx="28" fill="url(#hero)"/>
+  <text x="144" y="160" fill="#0D6E73" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700">DESKTOP CONTROL SURFACE</text>
+  <text x="144" y="214" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700">Ashburn Water Intelligence Workspace</text>
+  <text x="144" y="252" fill="#5D7C83" font-family="Segoe UI, Arial, sans-serif" font-size="20">Review facility evidence, contradiction risk, and public-record retrieval pathways before trusting a figure.</text>
+  <rect x="144" y="276" width="248" height="28" rx="14" fill="#E4F4F3"/>
+  <rect x="414" y="276" width="192" height="28" rx="14" fill="#E4F4F3"/>
+  <rect x="628" y="276" width="224" height="28" rx="14" fill="#E4F4F3"/>
+  <g>
+    <rect x="112" y="352" width="286" height="126" rx="22" fill="#F1F9F8" stroke="#D7E9E7"/>
+    <text x="138" y="390" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="16">Operator</text>
+    <text x="138" y="444" fill="#143038" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="700">AWS</text>
+  </g>
+  <g>
+    <rect x="418" y="352" width="286" height="126" rx="22" fill="#F1F9F8" stroke="#D7E9E7"/>
+    <text x="444" y="390" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="16">Data Quality</text>
+    <text x="444" y="444" fill="#143038" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="700">0.87</text>
+  </g>
+  <g>
+    <rect x="724" y="352" width="286" height="126" rx="22" fill="#F1F9F8" stroke="#D7E9E7"/>
+    <text x="750" y="390" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="16">Evidence Class</text>
+    <text x="750" y="444" fill="#143038" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="700">Level B</text>
+  </g>
+  <g>
+    <rect x="1030" y="352" width="298" height="126" rx="22" fill="#F1F9F8" stroke="#D7E9E7"/>
+    <text x="1056" y="390" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="16">Contradictions</text>
+    <text x="1056" y="444" fill="#143038" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="700">2</text>
+  </g>
+  <rect x="112" y="514" width="752" height="274" rx="26" fill="#FFFFFF" stroke="#D5E6E4" stroke-width="2"/>
+  <text x="144" y="560" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="700">Primary Water Figure</text>
+  <text x="144" y="594" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="18">Promoted value with confidence, reporting boundary, and evidence lineage.</text>
+  <rect x="144" y="624" width="688" height="132" rx="20" fill="#F7FBFB" stroke="#DAEBE8"/>
+  <text x="170" y="664" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="700">annual_water_usage_liters</text>
+  <text x="170" y="715" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="700">4,820,000 L</text>
+  <rect x="544" y="646" width="112" height="28" rx="14" fill="#E6F3F3"/>
+  <rect x="668" y="646" width="132" height="28" rx="14" fill="#E6F3F3"/>
+  <rect x="544" y="688" width="256" height="18" rx="9" fill="#E6F3F3"/>
+  <rect x="890" y="514" width="438" height="274" rx="26" fill="#FFFFFF" stroke="#D5E6E4" stroke-width="2"/>
+  <text x="922" y="560" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="700">Public Record Retrieval</text>
+  <text x="922" y="594" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="18">Authorities and request templates for lawful follow-up.</text>
+  <rect x="922" y="622" width="374" height="64" rx="18" fill="#F7FBFB" stroke="#DAEBE8"/>
+  <rect x="922" y="702" width="374" height="64" rx="18" fill="#F7FBFB" stroke="#DAEBE8"/>
+  <text x="946" y="660" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Loudoun County Utilities</text>
+  <text x="946" y="740" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Virginia DEQ</text>
+  <defs>
+    <linearGradient id="hero" x1="112" y1="112" x2="1328" y2="324" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF7F6"/>
+    </linearGradient>
+  </defs>
+</svg>

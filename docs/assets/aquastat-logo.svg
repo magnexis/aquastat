@@ -1,0 +1,17 @@
+<svg width="720" height="220" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="220" rx="28" fill="#F4FBFC"/>
+  <rect x="26" y="26" width="668" height="168" rx="24" fill="url(#bg)"/>
+  <circle cx="118" cy="110" r="54" fill="#D8F0EF"/>
+  <path d="M118 62C96 90 83 109 83 127C83 146 98 160 118 160C138 160 153 146 153 127C153 109 140 90 118 62Z" fill="#0D8B8F"/>
+  <path d="M105 130C113 117 120 104 126 88C134 101 141 113 141 126C141 139 131 149 118 149C105 149 95 140 95 127C95 122 98 116 105 130Z" fill="#83D4CF"/>
+  <path d="M108 122C113 116 118 108 122 99C126 108 130 115 130 122C130 130 125 136 118 136C111 136 106 130 108 122Z" fill="#F4FBFC"/>
+  <text x="196" y="96" fill="#0E2D34" font-family="Segoe UI, Arial, sans-serif" font-size="54" font-weight="700">AquaStat</text>
+  <text x="198" y="132" fill="#31535A" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="600">Water-aware infrastructure intelligence for data centers</text>
+  <text x="198" y="162" fill="#5D7C83" font-family="Segoe UI, Arial, sans-serif" font-size="18">Live API, docs, desktop analyst shell, and deployment assets in one repo</text>
+  <defs>
+    <linearGradient id="bg" x1="26" y1="26" x2="694" y2="194" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF7F6"/>
+    </linearGradient>
+  </defs>
+</svg>

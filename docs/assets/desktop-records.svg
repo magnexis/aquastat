@@ -1,0 +1,39 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="900" fill="#F4FBFC"/>
+  <rect x="56" y="56" width="1328" height="788" rx="32" fill="#FFFFFF" stroke="#CDE3E0" stroke-width="2"/>
+  <rect x="88" y="88" width="1264" height="112" rx="24" fill="url(#head)"/>
+  <text x="124" y="138" fill="#0D6E73" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700">AQUASTAT DESKTOP</text>
+  <text x="124" y="178" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="36" font-weight="700">Contradictory Claims and Retrieval Pathways</text>
+  <rect x="88" y="232" width="606" height="564" rx="26" fill="#FFFFFF" stroke="#D6E8E5" stroke-width="2"/>
+  <text x="120" y="278" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700">Contradictory Claims</text>
+  <text x="120" y="312" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="18">Competing figures remain visible instead of being hidden behind a single summary number.</text>
+  <rect x="120" y="346" width="542" height="148" rx="20" fill="#FFF7F2" stroke="#F0D4C1"/>
+  <text x="148" y="388" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">permit_max_daily_withdrawal_gallons</text>
+  <rect x="148" y="410" width="118" height="28" rx="14" fill="#FDE8DD"/>
+  <rect x="278" y="410" width="136" height="28" rx="14" fill="#FDE8DD"/>
+  <text x="148" y="470" fill="#7C4A21" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700">1,800,000 gal/day</text>
+  <rect x="120" y="520" width="542" height="148" rx="20" fill="#FDF1F1" stroke="#EECFCF"/>
+  <text x="148" y="562" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">reported_annual_water_usage_liters</text>
+  <rect x="148" y="584" width="118" height="28" rx="14" fill="#F9DEDE"/>
+  <rect x="278" y="584" width="136" height="28" rx="14" fill="#F9DEDE"/>
+  <text x="148" y="644" fill="#8A2C2C" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700">4,100,000 L/year</text>
+  <rect x="726" y="232" width="626" height="564" rx="26" fill="#FFFFFF" stroke="#D6E8E5" stroke-width="2"/>
+  <text x="758" y="278" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700">Public Record Templates</text>
+  <text x="758" y="312" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="18">Pre-scoped requests help analysts ask the right agencies for the right materials.</text>
+  <rect x="758" y="350" width="562" height="162" rx="20" fill="#F7FBFB" stroke="#DAEBE8"/>
+  <text x="786" y="392" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Loudoun County Utilities</text>
+  <text x="786" y="428" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="18">Utility bills, reclaimed water agreements, and metered delivery history.</text>
+  <rect x="786" y="452" width="210" height="14" rx="7" fill="#E6F3F3"/>
+  <rect x="786" y="476" width="318" height="14" rx="7" fill="#E6F3F3"/>
+  <rect x="758" y="544" width="562" height="162" rx="20" fill="#F7FBFB" stroke="#DAEBE8"/>
+  <text x="786" y="586" fill="#123038" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">Virginia Department of Environmental Quality</text>
+  <text x="786" y="622" fill="#64828A" font-family="Segoe UI, Arial, sans-serif" font-size="18">Permits, discharge records, inspection notes, and withdrawals tied to the campus.</text>
+  <rect x="786" y="646" width="236" height="14" rx="7" fill="#E6F3F3"/>
+  <rect x="786" y="670" width="340" height="14" rx="7" fill="#E6F3F3"/>
+  <defs>
+    <linearGradient id="head" x1="88" y1="88" x2="1352" y2="200" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF7F6"/>
+    </linearGradient>
+  </defs>
+</svg>

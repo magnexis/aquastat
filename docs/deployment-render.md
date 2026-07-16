@@ -34,7 +34,7 @@ At minimum configure:
 - `AQUASTAT_ENVIRONMENT=production`
 - `AQUASTAT_HOST=0.0.0.0`
 - `AQUASTAT_PORT=10000`
-- `AQUASTAT_PUBLIC_BASE_URL=https://YOUR-RENDER-SERVICE.onrender.com`
+- `AQUASTAT_PUBLIC_BASE_URL=https://aquastat-api.onrender.com`
 - `AQUASTAT_DATABASE_URL=...`
 - `AQUASTAT_REDIS_ENABLED=false`
 - `AQUASTAT_API_KEY_HASHES=[\"...\"]`
@@ -54,9 +54,9 @@ psql "$AQUASTAT_DATABASE_URL" -f sql/schema.sql
 After Render deploys, verify:
 
 ```bash
-curl https://YOUR-RENDER-SERVICE.onrender.com/health
-curl https://YOUR-RENDER-SERVICE.onrender.com/health/ready
-curl https://YOUR-RENDER-SERVICE.onrender.com/openapi.json
+curl https://aquastat-api.onrender.com/health
+curl https://aquastat-api.onrender.com/health/ready
+curl https://aquastat-api.onrender.com/openapi.json
 ```
 
 ## 6. Update Public References
@@ -68,6 +68,6 @@ Once the Render URL is verified, update:
 - documentation examples
 - GitHub repository homepage if desired
 
-## Current Blocker
+## Current Status
 
-Render deployment has not been executed from this environment because no authenticated Render CLI or Render API token is available in the workspace.
+The public Render deployment is live at `https://aquastat-api.onrender.com`.

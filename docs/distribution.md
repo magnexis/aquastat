@@ -10,7 +10,7 @@ Use GitHub as the canonical home for source, issues, changelog, deployment instr
 
 ## Render and Neon
 
-Render is the recommended hosted API target and Neon is the recommended persistent PostgreSQL provider. After deployment, replace the placeholder base URL in the README, Postman environment example, and marketplace listing drafts with the verified Render public URL.
+Render is the recommended hosted API target and Neon is the recommended persistent PostgreSQL provider. The current public deployment is `https://aquastat-api.onrender.com`, and the README, Postman environment example, and marketplace listing drafts should stay aligned with that verified base URL unless the production host changes.
 
 ## Docker and Self-Hosting
 

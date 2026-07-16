@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
     api_v2_prefix: str = "/api/v2"
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/aquastat"
-    public_base_url: str = "https://YOUR-RENDER-SERVICE.onrender.com"
+    public_base_url: str = "https://aquastat-api.onrender.com"
     docs_enabled: bool = True
     weather_cache_ttl_seconds: int = 900
     weather_cache_maxsize: int = 256

@@ -55,4 +55,4 @@
 - AquaStat remains a FastAPI backend-first project and should continue to rely on built-in Swagger/OpenAPI instead of a separate frontend
 - Initial authentication mode is environment-backed hashed API keys, with room for database-backed API keys later
 - Hosted deployment should remain provider-neutral, with Render/Neon as the current recommended path and container portability preserved
-- Existing deployed URLs are not yet known, so production URLs remain placeholders until a real deployment exists
+- The primary production deployment is now live on Render at `https://aquastat-api.onrender.com`, so public docs and examples should reference that host by default
