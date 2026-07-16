@@ -92,3 +92,84 @@ class AuditEvent(Base):
     client_ip: Mapped[str | None] = mapped_column(String(64), nullable=True)
     metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+
+
+class BillingPackage(Base):
+    __tablename__ = "billing_packages"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    slug: Mapped[str] = mapped_column(String(64), nullable=False, unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    amount_minor: Mapped[int] = mapped_column(Integer, nullable=False)
+    currency: Mapped[str] = mapped_column(String(8), nullable=False, default="USD")
+    requests_granted: Mapped[int] = mapped_column(Integer, nullable=False)
+    active: Mapped[bool] = mapped_column(Integer, nullable=False, default=1)
+    environment: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    display_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    package_version: Mapped[str] = mapped_column(String(20), nullable=False, default="1")
+    metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+
+
+class BillingCheckoutSession(Base):
+    __tablename__ = "billing_checkout_sessions"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    public_token: Mapped[str] = mapped_column(String(64), nullable=False, unique=True, index=True)
+    target_api_key_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    target_api_key_prefix: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    package_slug: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    provider: Mapped[str] = mapped_column(String(32), nullable=False, default="square")
+    status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    amount_minor: Mapped[int] = mapped_column(Integer, nullable=False)
+    currency: Mapped[str] = mapped_column(String(8), nullable=False)
+    requests_expected: Mapped[int] = mapped_column(Integer, nullable=False)
+    checkout_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    idempotency_key: Mapped[str] = mapped_column(String(128), nullable=False, unique=True)
+    square_order_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    square_payment_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    failed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    canceled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+
+
+class QuotaGrant(Base):
+    __tablename__ = "quota_grants"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    api_key_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    api_key_prefix: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    checkout_session_id: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    package_slug: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    grant_type: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    requests_granted: Mapped[int] = mapped_column(Integer, nullable=False)
+    requests_consumed: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    requests_remaining: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revocation_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+
+
+class UsageLedgerEntry(Base):
+    __tablename__ = "usage_ledger"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    api_key_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    api_key_prefix: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    quota_grant_id: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
+    request_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    operation: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    delta: Mapped[int] = mapped_column(Integer, nullable=False)
+    balance_after: Mapped[int] = mapped_column(Integer, nullable=False)
+    reason: Mapped[str] = mapped_column(String(120), nullable=False)
+    metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)

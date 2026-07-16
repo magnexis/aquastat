@@ -46,6 +46,20 @@ class Settings(BaseSettings):
     load_weight_grid: float = 0.5
     load_weight_latency: float = 0.3
     load_weight_carbon: float = 0.2
+    billing_enabled: bool = False
+    cash_app_pay_enabled: bool = False
+    billing_sandbox_only: bool = True
+    billing_default_currency: str = "USD"
+    billing_checkout_base_url: str = "https://aquastat-api.onrender.com"
+    billing_session_ttl_minutes: int = 30
+    square_environment: Literal["sandbox", "production"] = "sandbox"
+    square_application_id: str | None = None
+    square_access_token: str | None = None
+    square_location_id: str | None = None
+    square_webhook_signature_key: str | None = None
+    square_webhook_notification_url: str | None = None
+    public_square_application_id: str | None = None
+    public_square_location_id: str | None = None
     api_key_hashes: list[str] = Field(default_factory=list)
     admin_api_key_hashes: list[str] = Field(default_factory=list)
     internal_api_key_plaintext: str | None = None

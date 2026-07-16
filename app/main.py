@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 
 from app.api.meta_routes import get_health, router as meta_router
+from app.api.billing_routes import router as billing_router
 from app.api.facility_routes import router as facility_router
 from app.api.ops_routes import router as ops_router
 from app.api.routes import router
@@ -66,6 +67,7 @@ app.add_middleware(TieredRateLimitMiddleware)
 install_openapi(app)
 app.include_router(meta_router, prefix=settings.api_v1_prefix)
 app.include_router(router, prefix=settings.api_v1_prefix)
+app.include_router(billing_router, prefix=settings.api_v1_prefix)
 app.include_router(facility_router, prefix=settings.api_v1_prefix)
 app.include_router(v1_alias_router, prefix=settings.api_v1_prefix)
 app.include_router(v2_router, prefix=settings.api_v2_prefix)
