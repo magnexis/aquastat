@@ -13,7 +13,8 @@ SITE_DIR = ROOT / "site"
 
 DOC_LINKS = [
     ("Implementation Audit", "docs/implementation-audit.md"),
-    ("Railway Deployment", "docs/deployment-railway.md"),
+    ("Render Deployment", "docs/deployment-render.md"),
+    ("Cloud Run Deployment", "docs/deployment-cloud-run.md"),
     ("Authentication", "docs/authentication.md"),
     ("Rate Limits", "docs/rate-limits.md"),
     ("Errors", "docs/errors.md"),
@@ -126,7 +127,7 @@ def build_index() -> str:
         <ul>
           <li><a href="./openapi.json">Download OpenAPI JSON</a></li>
           <li><a href="./openapi.yaml">Download OpenAPI YAML</a></li>
-          <li><a href="./docs/deployment-railway.md">Railway deployment guide</a></li>
+          <li><a href="./docs/deployment-render.md">Render deployment guide</a></li>
           <li><a href="./docs/authentication.md">Authentication guide</a></li>
         </ul>
       </article>
@@ -143,7 +144,7 @@ def build_index() -> str:
         <h2>What This Site Covers</h2>
         <ul>
           <li>API auth, errors, and rate limits</li>
-          <li>Deployment to Railway and self-hosted targets</li>
+          <li>Deployment to Render, Cloud Run, and self-hosted targets</li>
           <li>Data-source attribution and scientific caveats</li>
           <li>Distribution guidance for GitHub, Postman, and API marketplaces</li>
         </ul>

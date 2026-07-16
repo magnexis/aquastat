@@ -65,7 +65,7 @@ class AquaStatClient:
         self._async = httpx.AsyncClient(timeout=10.0, headers=self._default_headers())
 
     def _default_headers(self) -> dict[str, str]:
-        headers = {"User-Agent": "aquastat-sdk-python/1.0.0"}
+        headers = {"User-Agent": "aquastat-sdk-python/1.0.1"}
         if self.api_key:
             headers["X-API-Key"] = self.api_key
         return headers

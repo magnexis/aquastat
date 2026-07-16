@@ -6,7 +6,7 @@ export class AquaStatClient {
   }
 
   headers() {
-    const headers = { "User-Agent": "aquastat-sdk-js/1.0.0" };
+    const headers = { "User-Agent": "aquastat-sdk-js/1.0.1" };
     if (this.apiKey) headers["X-API-Key"] = this.apiKey;
     return headers;
   }

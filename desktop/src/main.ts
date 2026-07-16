@@ -1,176 +1,417 @@
 import { AquaStatDesktopClient } from "./api.js";
-import type { FieldEvidence, PublicRecordTemplateResponse } from "./types.js";
+import type {
+  FacilityChangesResponse,
+  FacilityDetailResponse,
+  FacilityEvidenceResponse,
+  FacilityListResponse,
+  FacilitySourcesResponse,
+  FieldEvidence,
+  PublicRecordTemplateResponse,
+} from "./types.js";
 
-const client = new AquaStatDesktopClient("http://127.0.0.1:8080");
-const facilityId = "fac_syn_ashburn";
+const DEFAULT_BASE_URL = "http://127.0.0.1:8080";
+const fallbackFacilityId = "fac_syn_ashburn";
+
+type DesktopBundle = {
+  detail: FacilityDetailResponse;
+  evidence: FacilityEvidenceResponse;
+  sources: FacilitySourcesResponse;
+  history: FacilityChangesResponse;
+  templates: PublicRecordTemplateResponse;
+};
+
+type AppState = {
+  baseUrl: string;
+  client: AquaStatDesktopClient;
+  facilities: FacilityListResponse["items"];
+  selectedFacilityId: string;
+  activeTab: "overview" | "evidence" | "sources" | "history" | "records";
+  loadingList: boolean;
+  loadingDetail: boolean;
+  error: string | null;
+  bundle: DesktopBundle | null;
+};
+
+const state: AppState = {
+  baseUrl: DEFAULT_BASE_URL,
+  client: new AquaStatDesktopClient(DEFAULT_BASE_URL),
+  facilities: [],
+  selectedFacilityId: fallbackFacilityId,
+  activeTab: "overview",
+  loadingList: true,
+  loadingDetail: true,
+  error: null,
+  bundle: null,
+};
 
 function injectStyles(): void {
   const style = document.createElement("style");
   style.textContent = `
     :root {
       color-scheme: light;
-      --bg: #f4fbfc;
-      --panel: #ffffff;
-      --panel-alt: #eef8f7;
-      --border: #c9e3df;
-      --text: #153037;
-      --muted: #5d7c83;
+      --bg-top: #eff8f8;
+      --bg-bottom: #e2f0ef;
+      --panel: rgba(255, 255, 255, 0.88);
+      --panel-strong: rgba(255, 255, 255, 0.96);
+      --panel-alt: #f3faf9;
+      --text: #123038;
+      --muted: #617d84;
+      --line: rgba(15, 91, 99, 0.14);
       --brand: #0d8b8f;
-      --brand-deep: #0c5f66;
-      --warn: #b15e16;
-      --danger: #b83f3f;
-      --shadow: 0 18px 50px rgba(15, 68, 79, 0.12);
-      font-family: "Segoe UI", Inter, system-ui, sans-serif;
+      --brand-deep: #0a5f67;
+      --brand-soft: #dff2f1;
+      --accent: #f5a524;
+      --danger: #b64242;
+      --warning: #a56318;
+      --shadow: 0 18px 60px rgba(13, 55, 62, 0.14);
+      font-family: "Segoe UI", "IBM Plex Sans", system-ui, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(circle at top left, rgba(13, 139, 143, 0.18), transparent 30%),
-        linear-gradient(180deg, #f7fcfc 0%, var(--bg) 100%);
       color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(13, 139, 143, 0.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(245, 165, 36, 0.12), transparent 24%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
     }
 
-    .shell {
-      max-width: 1200px;
+    button, input, textarea {
+      font: inherit;
+    }
+
+    .app-shell {
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 32px;
+      padding: 28px;
+      display: grid;
+      gap: 20px;
     }
 
-    .hero {
-      display: flex;
-      justify-content: space-between;
-      gap: 24px;
-      align-items: flex-start;
-      margin-bottom: 24px;
-    }
-
-    .hero-card,
-    .panel {
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid var(--border);
-      border-radius: 24px;
+    .glass,
+    .sidebar,
+    .workspace-panel,
+    .hero-card {
+      backdrop-filter: blur(18px);
+      background: var(--panel);
+      border: 1px solid var(--line);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
     }
 
     .hero-card {
-      flex: 1;
+      border-radius: 30px;
       padding: 28px;
+      overflow: hidden;
+      position: relative;
     }
 
-    .hero h1 {
-      margin: 0 0 10px;
-      font-size: 34px;
-      line-height: 1.1;
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -120px auto;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(13, 139, 143, 0.20) 0%, transparent 70%);
+      pointer-events: none;
     }
 
-    .hero p {
-      margin: 0;
-      color: var(--muted);
-      max-width: 62ch;
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 22px;
     }
 
-    .status-chip {
+    .hero-kicker {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       border-radius: 999px;
-      padding: 8px 12px;
-      background: rgba(13, 139, 143, 0.1);
+      padding: 7px 12px;
+      background: rgba(13, 139, 143, 0.10);
       color: var(--brand-deep);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
       text-transform: uppercase;
-      margin-bottom: 16px;
+      letter-spacing: 0.06em;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 14px;
     }
 
-    .summary-grid,
-    .insight-grid {
+    .hero-card h1 {
+      margin: 0 0 10px;
+      font-size: 38px;
+      line-height: 1.05;
+      max-width: 14ch;
+    }
+
+    .hero-card p {
+      margin: 0;
+      max-width: 68ch;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .status-stack {
+      display: grid;
+      gap: 10px;
+      min-width: 260px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 18px;
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      font-weight: 700;
+      color: var(--brand-deep);
+    }
+
+    .hero-metrics {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 24px;
+      gap: 14px;
     }
 
-    .stat {
+    .metric-card {
+      border-radius: 22px;
       padding: 18px;
-      background: var(--panel-alt);
-      border-radius: 18px;
-      border: 1px solid var(--border);
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
     }
 
-    .stat-label {
+    .metric-card .label {
       color: var(--muted);
       font-size: 13px;
-      margin-bottom: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
     }
 
-    .stat-value {
+    .metric-card .value {
       font-size: 28px;
-      font-weight: 700;
+      font-weight: 800;
+      line-height: 1.1;
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.35fr 0.95fr;
+      grid-template-columns: 320px 1fr;
       gap: 20px;
+      min-height: 760px;
     }
 
-    .panel {
-      padding: 24px;
+    .sidebar {
+      border-radius: 28px;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
     }
 
-    .panel h2 {
-      margin: 0 0 6px;
-      font-size: 22px;
+    .sidebar h2,
+    .workspace-panel h2,
+    .workspace-panel h3 {
+      margin: 0;
     }
 
-    .panel-intro {
-      margin: 0 0 18px;
+    .sidebar-intro {
       color: var(--muted);
       line-height: 1.5;
+      margin: 0;
+      font-size: 14px;
     }
 
-    .evidence-card,
-    .template-card,
-    .claim-card {
-      border: 1px solid var(--border);
+    .base-url-box,
+    .search-box {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .text-input,
+    .search-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text);
+    }
+
+    .button {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+      box-shadow: 0 10px 22px rgba(13, 139, 143, 0.24);
+    }
+
+    .button.secondary {
+      background: var(--panel-strong);
+      color: var(--brand-deep);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .facility-list {
+      display: grid;
+      gap: 10px;
+      max-height: 520px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .facility-button {
+      text-align: left;
+      border: 1px solid transparent;
       border-radius: 18px;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.72);
+      cursor: pointer;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+    }
+
+    .facility-button:hover {
+      transform: translateX(1px);
+      border-color: rgba(13, 139, 143, 0.26);
+    }
+
+    .facility-button.active {
+      background: linear-gradient(180deg, rgba(13, 139, 143, 0.12), rgba(13, 139, 143, 0.04));
+      border-color: rgba(13, 139, 143, 0.34);
+    }
+
+    .facility-name {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .facility-meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .workspace {
+      display: grid;
+      gap: 20px;
+      align-content: start;
+    }
+
+    .workspace-panel {
+      border-radius: 28px;
+      padding: 22px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      color: var(--brand-deep);
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
       padding: 18px;
-      background: #fff;
-      margin-bottom: 14px;
+      background: var(--panel-strong);
+    }
+
+    .card h3 {
+      margin-bottom: 6px;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .value-xl {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1.05;
+      margin: 14px 0 8px;
     }
 
     .badge-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin: 12px 0 0;
+      gap: 8px;
+      margin-top: 12px;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
+      gap: 6px;
       border-radius: 999px;
       padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 700;
-      background: #edf7f7;
+      background: var(--brand-soft);
       color: var(--brand-deep);
+      font-size: 12px;
+      font-weight: 800;
     }
 
     .badge.warn {
-      background: #fff0df;
-      color: var(--warn);
+      background: #fff2df;
+      color: var(--warning);
     }
 
     .badge.danger {
@@ -178,80 +419,158 @@ function injectStyles(): void {
       color: var(--danger);
     }
 
-    dl.meta {
+    .badge.dark {
+      background: rgba(18, 48, 56, 0.1);
+      color: var(--text);
+    }
+
+    .meta-grid {
       display: grid;
-      grid-template-columns: 160px 1fr;
+      grid-template-columns: 150px 1fr;
       gap: 10px 14px;
-      margin: 18px 0 0;
+      margin-top: 16px;
     }
 
-    dt {
+    .meta-grid dt {
+      margin: 0;
       color: var(--muted);
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    dd {
+    .meta-grid dd {
       margin: 0;
       font-weight: 600;
     }
 
-    ul {
-      margin: 10px 0 0;
-      padding-left: 20px;
-      color: var(--text);
+    .table-list,
+    .timeline-list,
+    .source-list,
+    .template-list,
+    .claim-list {
+      display: grid;
+      gap: 12px;
     }
 
-    li + li {
-      margin-top: 6px;
+    .evidence-row,
+    .timeline-item,
+    .source-item,
+    .template-item,
+    .claim-item {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.92);
     }
 
-    .loading,
-    .error {
+    .section-title {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      min-height: 260px;
-      border: 1px dashed var(--border);
-      border-radius: 24px;
-      background: rgba(255, 255, 255, 0.7);
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow {
       color: var(--muted);
-      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .empty,
+    .loading,
+    .error-box {
+      border: 1px dashed var(--line);
+      border-radius: 24px;
+      padding: 28px;
       text-align: center;
-      padding: 20px;
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--muted);
     }
 
-    .error {
+    .error-box {
       color: var(--danger);
-      border-color: rgba(184, 63, 63, 0.3);
-      background: rgba(253, 234, 234, 0.8);
+      border-color: rgba(182, 66, 66, 0.25);
+      background: rgba(253, 234, 234, 0.72);
     }
 
-    @media (max-width: 980px) {
-      .hero,
-      .layout {
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini-stat {
+      border-radius: 18px;
+      padding: 14px;
+      background: var(--panel-alt);
+      border: 1px solid var(--line);
+    }
+
+    .mini-stat .k {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .mini-stat .v {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    pre.template-body {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f5fbfa;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 14px;
+      margin: 12px 0 0;
+      color: #27434a;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    a.inline-link {
+      color: var(--brand-deep);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    a.inline-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1180px) {
+      .layout,
+      .content-grid {
         grid-template-columns: 1fr;
-        display: grid;
       }
 
-      .summary-grid,
-      .insight-grid {
+      .hero-top {
+        flex-direction: column;
+      }
+
+      .hero-metrics {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    @media (max-width: 640px) {
-      .shell {
-        padding: 18px;
-      }
-
-      .summary-grid,
-      .insight-grid {
-        grid-template-columns: 1fr;
-      }
-
-      dl.meta {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 720px) {
+      .app-shell { padding: 16px; }
+      .hero-card h1 { font-size: 30px; }
+      .hero-metrics,
+      .mini-grid { grid-template-columns: 1fr; }
+      .meta-grid { grid-template-columns: 1fr; }
+      .row { flex-direction: column; }
     }
   `;
   document.head.append(style);
@@ -266,199 +585,706 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
-function renderEvidence(evidence: FieldEvidence | null): string {
-  if (!evidence) {
-    return `
-      <div class="evidence-card">
-        <h3>No primary water figure</h3>
-        <p class="panel-intro">This facility record exists, but AquaStat has not promoted a single primary figure yet.</p>
-      </div>
-    `;
+function formatValue(value: string | number | boolean | null, unit?: string | null): string {
+  if (value === null || value === "") {
+    return "Unknown";
   }
+  return `${String(value)}${unit ? ` ${unit}` : ""}`;
+}
 
-  const value = evidence.value ?? "unknown";
-  const unit = evidence.unit ? ` ${escapeHtml(evidence.unit)}` : "";
+function pct(value: number): string {
+  return `${Math.round(value * 100)}%`;
+}
+
+function formatDate(value: string | null): string {
+  if (!value) {
+    return "Unknown";
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  return date.toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function summaryCards(detail: FacilityDetailResponse, templates: PublicRecordTemplateResponse): string {
   return `
-    <div class="evidence-card">
-      <h3>${escapeHtml(evidence.field)}</h3>
-      <div class="stat-value">${escapeHtml(String(value))}${unit}</div>
-      <div class="badge-row">
-        <span class="badge">${escapeHtml(evidence.evidence_class)}</span>
-        <span class="badge">${escapeHtml(evidence.figure_type)}</span>
-        <span class="badge">${escapeHtml(evidence.reporting_boundary)}</span>
-      </div>
-      <dl class="meta">
-        <dt>Confidence</dt>
-        <dd>${Math.round(evidence.confidence * 100)}%</dd>
-        <dt>Status</dt>
-        <dd>${escapeHtml(evidence.value_status)}</dd>
-        <dt>Source</dt>
-        <dd>${escapeHtml(evidence.source_id)}</dd>
-      </dl>
-      ${evidence.notes ? `<p class="panel-intro">${escapeHtml(evidence.notes)}</p>` : ""}
+    <div class="hero-metrics">
+      <article class="metric-card">
+        <div class="label">Data Quality</div>
+        <div class="value">${detail.facility.data_quality.score.toFixed(2)}</div>
+      </article>
+      <article class="metric-card">
+        <div class="label">Confidence</div>
+        <div class="value">${detail.confidence_score}</div>
+      </article>
+      <article class="metric-card">
+        <div class="label">Known Holders</div>
+        <div class="value">${templates.known_holders.length}</div>
+      </article>
+      <article class="metric-card">
+        <div class="label">Contradictions</div>
+        <div class="value">${detail.contradictory_claims.length}</div>
+      </article>
     </div>
   `;
 }
 
-function renderTemplateList(templates: PublicRecordTemplateResponse): string {
-  return templates.templates
-    .slice(0, 2)
-    .map(
-      (template) => `
-        <article class="template-card">
-          <h3>${escapeHtml(template.authority)}</h3>
-          <p class="panel-intro">${escapeHtml(template.summary)}</p>
-          <div class="badge-row">
-            <span class="badge">${escapeHtml(template.facility_id)}</span>
-            <span class="badge">${template.requested_records.length} requested records</span>
+function renderOverview(detail: FacilityDetailResponse, templates: PublicRecordTemplateResponse): string {
+  const primary = detail.primary_water_figure;
+  const warnings = detail.facility.warnings.length
+    ? detail.facility.warnings.map((warning) => `<span class="badge warn">${escapeHtml(warning)}</span>`).join("")
+    : '<span class="badge">No active facility warnings</span>';
+  const waterSources = detail.water_sources.length
+    ? detail.water_sources
+        .map(
+          (source) =>
+            `<span class="badge dark">${escapeHtml(source.type)}${source.percent !== null ? ` ${source.percent}%` : ""}</span>`,
+        )
+        .join("")
+    : '<span class="badge dark">No water source breakdown</span>';
+
+  return `
+    <div class="content-grid">
+      <div class="stack">
+        <section class="card">
+          <div class="section-title">
+            <div>
+              <div class="eyebrow">Primary water figure</div>
+              <h3>${primary ? escapeHtml(primary.field) : "No promoted primary figure"}</h3>
+            </div>
+            ${primary ? `<span class="badge">${escapeHtml(primary.evidence_class)}</span>` : ""}
           </div>
-          <ul>
-            ${template.requested_records.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
-          </ul>
-        </article>
-      `,
-    )
-    .join("");
+          <p>${primary ? escapeHtml(primary.notes ?? "AquaStat selected this figure as the current best-supported operational reference.") : "This facility exists in the registry but does not yet have a single promoted primary figure."}</p>
+          ${
+            primary
+              ? `
+            <div class="value-xl">${escapeHtml(formatValue(primary.value, primary.unit))}</div>
+            <div class="badge-row">
+              <span class="badge">${escapeHtml(primary.figure_type)}</span>
+              <span class="badge">${escapeHtml(primary.reporting_boundary)}</span>
+              <span class="badge dark">${escapeHtml(primary.value_status)}</span>
+              <span class="badge dark">${pct(primary.confidence)} confidence</span>
+            </div>
+            <dl class="meta-grid">
+              <dt>Source</dt>
+              <dd>${escapeHtml(primary.source_id)}</dd>
+              <dt>Source type</dt>
+              <dd>${escapeHtml(primary.source_type)}</dd>
+              <dt>Source date</dt>
+              <dd>${escapeHtml(primary.source_date)}</dd>
+              <dt>Verification</dt>
+              <dd>${escapeHtml(primary.verification_status)}</dd>
+              <dt>Extraction</dt>
+              <dd>${escapeHtml(primary.extraction_method)}</dd>
+              <dt>Independent chain</dt>
+              <dd>${escapeHtml(primary.independent_chain_id ?? "Not assigned")}</dd>
+            </dl>
+          `
+              : ""
+          }
+        </section>
+
+        <section class="card">
+          <div class="section-title">
+            <div>
+              <div class="eyebrow">Coverage and provenance</div>
+              <h3>Record quality and operational coverage</h3>
+            </div>
+          </div>
+          <div class="mini-grid">
+            <article class="mini-stat"><div class="k">Location</div><div class="v">${escapeHtml(detail.facility.coverage.location)}</div></article>
+            <article class="mini-stat"><div class="k">Capacity</div><div class="v">${escapeHtml(detail.facility.coverage.capacity)}</div></article>
+            <article class="mini-stat"><div class="k">Cooling system</div><div class="v">${escapeHtml(detail.facility.coverage.cooling_system)}</div></article>
+            <article class="mini-stat"><div class="k">Water use</div><div class="v">${escapeHtml(detail.facility.coverage.water_use)}</div></article>
+          </div>
+          <div class="badge-row" style="margin-top: 16px;">
+            ${warnings}
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card">
+          <div class="section-title">
+            <div>
+              <div class="eyebrow">Facility profile</div>
+              <h3>${escapeHtml(detail.facility.name)}</h3>
+            </div>
+            <span class="badge dark">${escapeHtml(detail.record_status)}</span>
+          </div>
+          <dl class="meta-grid">
+            <dt>Operator</dt>
+            <dd>${escapeHtml(detail.facility.operator)}</dd>
+            <dt>Facility type</dt>
+            <dd>${escapeHtml(detail.facility.facility_type)}</dd>
+            <dt>Operational status</dt>
+            <dd>${escapeHtml(detail.facility.operational_status)}</dd>
+            <dt>Country</dt>
+            <dd>${escapeHtml(detail.facility.country)}</dd>
+            <dt>Municipality</dt>
+            <dd>${escapeHtml(detail.facility.municipality ?? "Unknown")}</dd>
+            <dt>Campus</dt>
+            <dd>${escapeHtml(detail.campus_name ?? "Unknown")}</dd>
+            <dt>Owner</dt>
+            <dd>${escapeHtml(detail.owner ?? "Unknown")}</dd>
+            <dt>Grid region</dt>
+            <dd>${escapeHtml(detail.facility.electricity_grid_region ?? "Unknown")}</dd>
+            <dt>Cooling systems</dt>
+            <dd>${escapeHtml(detail.facility.cooling_systems.join(", ") || "Unknown")}</dd>
+            <dt>Water sources</dt>
+            <dd><div class="badge-row">${waterSources}</div></dd>
+          </dl>
+        </section>
+
+        <section class="card">
+          <div class="section-title">
+            <div>
+              <div class="eyebrow">Public record readiness</div>
+              <h3>Known holders and follow-up</h3>
+            </div>
+          </div>
+          <div class="mini-grid">
+            <article class="mini-stat"><div class="k">Sources</div><div class="v">${detail.facility.source_summary.total_sources}</div></article>
+            <article class="mini-stat"><div class="k">Primary sources</div><div class="v">${detail.facility.source_summary.primary_sources}</div></article>
+            <article class="mini-stat"><div class="k">Independent chains</div><div class="v">${detail.facility.source_summary.independent_chains}</div></article>
+            <article class="mini-stat"><div class="k">Latest source</div><div class="v">${escapeHtml(formatDate(detail.facility.source_summary.latest_source_date))}</div></article>
+          </div>
+          <div class="badge-row" style="margin-top: 16px;">
+            ${
+              templates.known_holders
+                .slice(0, 4)
+                .map((holder) => `<span class="badge">${escapeHtml(holder.authority)}</span>`)
+                .join("") || '<span class="badge dark">No holders available</span>'
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+  `;
+}
+
+function renderEvidenceTab(evidence: FacilityEvidenceResponse): string {
+  if (evidence.evidence.length === 0) {
+    return '<div class="empty">No evidence rows are currently attached to this facility.</div>';
+  }
+
+  return `
+    <div class="table-list">
+      ${evidence.evidence
+        .map(
+          (item) => `
+            <article class="evidence-row">
+              <div class="section-title">
+                <div>
+                  <div class="eyebrow">${escapeHtml(item.field)}</div>
+                  <h3>${escapeHtml(formatValue(item.value, item.unit))}</h3>
+                </div>
+                <span class="badge">${escapeHtml(item.evidence_class)}</span>
+              </div>
+              <p>${escapeHtml(item.notes ?? "No inline note provided for this evidence record.")}</p>
+              <div class="badge-row">
+                <span class="badge">${escapeHtml(item.figure_type)}</span>
+                <span class="badge">${escapeHtml(item.reporting_boundary)}</span>
+                <span class="badge dark">${escapeHtml(item.source_type)}</span>
+                <span class="badge dark">${pct(item.confidence)} confidence</span>
+              </div>
+              <dl class="meta-grid">
+                <dt>Source ID</dt>
+                <dd>${escapeHtml(item.source_id)}</dd>
+                <dt>Source date</dt>
+                <dd>${escapeHtml(item.source_date)}</dd>
+                <dt>Verification</dt>
+                <dd>${escapeHtml(item.verification_status)}</dd>
+                <dt>Status</dt>
+                <dd>${escapeHtml(item.value_status)}</dd>
+              </dl>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderSourcesTab(sources: FacilitySourcesResponse): string {
+  if (sources.sources.length === 0) {
+    return '<div class="empty">No source records are currently attached to this facility.</div>';
+  }
+
+  return `
+    <div class="source-list">
+      ${sources.sources
+        .map(
+          (source) => `
+            <article class="source-item">
+              <div class="section-title">
+                <div>
+                  <div class="eyebrow">${escapeHtml(source.publisher)}</div>
+                  <h3>${escapeHtml(source.title)}</h3>
+                </div>
+                <span class="badge">${escapeHtml(source.reliability.tier)}</span>
+              </div>
+              <p>${escapeHtml(source.notes ?? source.reliability.explanation)}</p>
+              <div class="badge-row">
+                <span class="badge">${escapeHtml(source.document_type)}</span>
+                <span class="badge dark">${escapeHtml(source.source_type)}</span>
+                <span class="badge dark">${escapeHtml(source.review_status)}</span>
+                <span class="badge dark">Reliability ${source.reliability.score}</span>
+              </div>
+              <dl class="meta-grid">
+                <dt>Publication date</dt>
+                <dd>${escapeHtml(formatDate(source.publication_date))}</dd>
+                <dt>Retrieved</dt>
+                <dd>${escapeHtml(formatDate(source.retrieved_at))}</dd>
+                <dt>Jurisdiction</dt>
+                <dd>${escapeHtml(source.jurisdiction ?? "Unknown")}</dd>
+                <dt>Access</dt>
+                <dd>${escapeHtml(source.access_status)}</dd>
+              </dl>
+              <div class="badge-row">
+                <a class="inline-link" href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">Open source record</a>
+              </div>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderHistoryTab(history: FacilityChangesResponse): string {
+  if (history.changes.length === 0) {
+    return '<div class="empty">No change history entries are currently available for this facility.</div>';
+  }
+
+  return `
+    <div class="timeline-list">
+      ${history.changes
+        .map(
+          (entry) => `
+            <article class="timeline-item">
+              <div class="section-title">
+                <div>
+                  <div class="eyebrow">${escapeHtml(formatDate(entry.changed_at))}</div>
+                  <h3>${escapeHtml(entry.field)}</h3>
+                </div>
+                <span class="badge dark">${escapeHtml(entry.status)}</span>
+              </div>
+              <p>${escapeHtml(entry.summary)}</p>
+              <dl class="meta-grid">
+                <dt>Previous</dt>
+                <dd>${escapeHtml(entry.previous_value === null ? "Unknown" : String(entry.previous_value))}</dd>
+                <dt>New</dt>
+                <dd>${escapeHtml(entry.new_value === null ? "Unknown" : String(entry.new_value))}</dd>
+                <dt>Source</dt>
+                <dd>${escapeHtml(entry.source_id ?? "Unknown")}</dd>
+              </dl>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderRecordsTab(templates: PublicRecordTemplateResponse): string {
+  if (templates.templates.length === 0) {
+    return '<div class="empty">No public-record templates are currently available for this facility.</div>';
+  }
+
+  return `
+    <div class="template-list">
+      ${templates.templates
+        .map(
+          (template) => `
+            <article class="template-item">
+              <div class="section-title">
+                <div>
+                  <div class="eyebrow">${escapeHtml(template.authority)}</div>
+                  <h3>${escapeHtml(template.subject)}</h3>
+                </div>
+                <span class="badge">${template.requested_records.length} record asks</span>
+              </div>
+              <p>${escapeHtml(template.summary)}</p>
+              <div class="badge-row">
+                ${template.requested_records.map((record) => `<span class="badge dark">${escapeHtml(record)}</span>`).join("")}
+              </div>
+              <pre class="template-body">${escapeHtml(template.body)}</pre>
+              <div class="badge-row">
+                ${template.legal_notes.map((note) => `<span class="badge warn">${escapeHtml(note)}</span>`).join("")}
+              </div>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
 }
 
 function renderClaims(claims: FieldEvidence[]): string {
   if (claims.length === 0) {
-    return `
-      <div class="claim-card">
-        <strong>No contradictory claims detected.</strong>
-      </div>
-    `;
+    return '<div class="empty">No contradictory claims are currently attached to this facility.</div>';
   }
 
-  return claims
-    .map(
-      (claim) => `
-        <article class="claim-card">
-          <strong>${escapeHtml(claim.field)}</strong>
-          <div class="badge-row">
-            <span class="badge danger">${escapeHtml(claim.evidence_class)}</span>
-            <span class="badge warn">${escapeHtml(claim.figure_type)}</span>
-          </div>
-          <p class="panel-intro">${escapeHtml(String(claim.value ?? "unknown"))}${claim.unit ? ` ${escapeHtml(claim.unit)}` : ""}</p>
-        </article>
-      `,
-    )
-    .join("");
+  return `
+    <div class="claim-list">
+      ${claims
+        .map(
+          (claim) => `
+            <article class="claim-item">
+              <div class="section-title">
+                <div>
+                  <div class="eyebrow">${escapeHtml(claim.field)}</div>
+                  <h3>${escapeHtml(formatValue(claim.value, claim.unit))}</h3>
+                </div>
+                <span class="badge danger">${escapeHtml(claim.evidence_class)}</span>
+              </div>
+              <p>${escapeHtml(claim.notes ?? "Conflicting claim kept visible for analyst review.")}</p>
+              <div class="badge-row">
+                <span class="badge warn">${escapeHtml(claim.figure_type)}</span>
+                <span class="badge dark">${escapeHtml(claim.reporting_boundary)}</span>
+                <span class="badge dark">${escapeHtml(claim.source_id)}</span>
+              </div>
+            </article>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderWorkspace(): string {
+  if (state.error) {
+    return `<div class="error-box">${escapeHtml(state.error)}</div>`;
+  }
+
+  if (state.loadingDetail || !state.bundle) {
+    return '<div class="loading">Loading facility intelligence, evidence, and source history...</div>';
+  }
+
+  const { detail, evidence, sources, history, templates } = state.bundle;
+  const activeTab = state.activeTab;
+  const tabContent =
+    activeTab === "overview"
+      ? renderOverview(detail, templates)
+      : activeTab === "evidence"
+        ? renderEvidenceTab(evidence)
+        : activeTab === "sources"
+          ? renderSourcesTab(sources)
+          : activeTab === "history"
+            ? renderHistoryTab(history)
+            : renderRecordsTab(templates);
+
+  return `
+    <section class="hero-card">
+      <div class="hero-top">
+        <div>
+          <div class="hero-kicker">AquaStat Desktop Analyst Shell</div>
+          <h1>${escapeHtml(detail.facility.name)}</h1>
+          <p>
+            Browse facility intelligence, evidence lineage, contradiction signals, and public-record request templates
+            from one local-first workspace that talks directly to the AquaStat API.
+          </p>
+        </div>
+        <div class="status-stack">
+          <div class="status-pill">${escapeHtml(detail.facility.operator)} · ${escapeHtml(detail.facility.country)}</div>
+          <div class="status-pill">${escapeHtml(detail.facility.verification_status)} · ${escapeHtml(detail.record_status)}</div>
+        </div>
+      </div>
+      ${summaryCards(detail, templates)}
+    </section>
+
+    <section class="workspace-panel">
+      <div class="section-title">
+        <div>
+          <div class="eyebrow">Investigation workspace</div>
+          <h2>Facility intelligence panels</h2>
+        </div>
+        <span class="muted">Current facility: ${escapeHtml(detail.facility.slug)}</span>
+      </div>
+      <div class="tabs">
+        ${([
+          ["overview", "Overview"],
+          ["evidence", `Evidence (${evidence.evidence.length})`],
+          ["sources", `Sources (${sources.sources.length})`],
+          ["history", `History (${history.changes.length})`],
+          ["records", `Public Records (${templates.templates.length})`],
+        ] as const)
+          .map(
+            ([id, label]) =>
+              `<button class="tab ${activeTab === id ? "active" : ""}" data-tab="${id}">${escapeHtml(label)}</button>`,
+          )
+          .join("")}
+      </div>
+    </section>
+
+    <section class="workspace-panel">
+      ${tabContent}
+    </section>
+
+    <section class="workspace-panel">
+      <div class="section-title">
+        <div>
+          <div class="eyebrow">Contradiction review</div>
+          <h2>Competing claims kept visible</h2>
+        </div>
+      </div>
+      ${renderClaims(detail.contradictory_claims)}
+    </section>
+  `;
+}
+
+function renderSidebar(): string {
+  const facilities = state.facilities;
+  const selected = state.selectedFacilityId;
+
+  return `
+    <aside class="sidebar">
+      <div>
+        <div class="eyebrow">Connection</div>
+        <h2>Desktop control surface</h2>
+        <p class="sidebar-intro">
+          Point this shell at a local or hosted AquaStat API, then browse facility records without a separate web frontend.
+        </p>
+      </div>
+
+      <label class="base-url-box">
+        <span class="field-label">API base URL</span>
+        <div class="row">
+          <input id="baseUrlInput" class="text-input" value="${escapeHtml(state.baseUrl)}" spellcheck="false">
+          <button id="connectButton" class="button">Connect</button>
+        </div>
+      </label>
+
+      <label class="search-box">
+        <span class="field-label">Facility search</span>
+        <input id="facilitySearch" class="search-input" placeholder="Filter by name, operator, country, or slug">
+      </label>
+
+      <div class="row">
+        <button id="refreshButton" class="button secondary">Refresh Data</button>
+      </div>
+
+      <div>
+        <div class="field-label">Facilities</div>
+      </div>
+
+      <div id="facilityList" class="facility-list">
+        ${
+          state.loadingList
+            ? '<div class="loading">Loading facilities...</div>'
+            : facilities.length === 0
+              ? '<div class="empty">No facilities returned from this API endpoint.</div>'
+              : facilities
+                  .map(
+                    (facility) => `
+                      <button class="facility-button ${selected === facility.id ? "active" : ""}" data-facility-id="${escapeHtml(facility.id)}">
+                        <div class="facility-name">${escapeHtml(facility.name)}</div>
+                        <div class="facility-meta">${escapeHtml(facility.operator)} · ${escapeHtml(facility.country)} · ${escapeHtml(facility.slug)}</div>
+                        <div class="badge-row">
+                          <span class="badge">${escapeHtml(facility.data_quality.label)}</span>
+                          <span class="badge dark">${escapeHtml(facility.operational_status)}</span>
+                        </div>
+                      </button>
+                    `,
+                  )
+                  .join("")
+        }
+      </div>
+    </aside>
+  `;
+}
+
+function mountShell(): HTMLElement {
+  const root = document.createElement("main");
+  root.className = "app-shell";
+  root.innerHTML = `
+    <div class="layout">
+      <div id="sidebarMount"></div>
+      <div class="workspace" id="workspaceMount"></div>
+    </div>
+  `;
+  document.body.append(root);
+  return root;
+}
+
+function getWorkspaceElement(): HTMLElement {
+  const element = document.getElementById("workspaceMount");
+  if (!element) {
+    throw new Error("workspaceMount element not found");
+  }
+  return element;
+}
+
+function getSidebarElement(): HTMLElement {
+  const element = document.getElementById("sidebarMount");
+  if (!element) {
+    throw new Error("sidebarMount element not found");
+  }
+  return element;
+}
+
+function renderSidebarIntoDom(): void {
+  getSidebarElement().innerHTML = renderSidebar();
+  bindSidebarEvents();
+}
+
+function renderWorkspaceIntoDom(): void {
+  getWorkspaceElement().innerHTML = renderWorkspace();
+  bindWorkspaceEvents();
+}
+
+function filteredFacilities(query: string): AppState["facilities"] {
+  const needle = query.trim().toLowerCase();
+  if (!needle) {
+    return state.facilities;
+  }
+  return state.facilities.filter((facility) =>
+    [facility.name, facility.operator, facility.country, facility.slug].some((value) =>
+      value.toLowerCase().includes(needle),
+    ),
+  );
+}
+
+function applySearchFilter(): void {
+  const input = document.getElementById("facilitySearch") as HTMLInputElement | null;
+  const list = document.getElementById("facilityList");
+  if (!input || !list) {
+    return;
+  }
+  const facilities = filteredFacilities(input.value);
+  list.innerHTML =
+    facilities.length === 0
+      ? '<div class="empty">No facilities match this filter.</div>'
+      : facilities
+          .map(
+            (facility) => `
+              <button class="facility-button ${state.selectedFacilityId === facility.id ? "active" : ""}" data-facility-id="${escapeHtml(facility.id)}">
+                <div class="facility-name">${escapeHtml(facility.name)}</div>
+                <div class="facility-meta">${escapeHtml(facility.operator)} · ${escapeHtml(facility.country)} · ${escapeHtml(facility.slug)}</div>
+                <div class="badge-row">
+                  <span class="badge">${escapeHtml(facility.data_quality.label)}</span>
+                  <span class="badge dark">${escapeHtml(facility.operational_status)}</span>
+                </div>
+              </button>
+            `,
+          )
+          .join("");
+  list.querySelectorAll<HTMLButtonElement>("[data-facility-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      void selectFacility(button.dataset.facilityId ?? fallbackFacilityId);
+    });
+  });
+}
+
+function bindSidebarEvents(): void {
+  const connectButton = document.getElementById("connectButton");
+  const refreshButton = document.getElementById("refreshButton");
+  const baseUrlInput = document.getElementById("baseUrlInput") as HTMLInputElement | null;
+  const searchInput = document.getElementById("facilitySearch") as HTMLInputElement | null;
+
+  connectButton?.addEventListener("click", () => {
+    const nextBaseUrl = baseUrlInput?.value.trim() || DEFAULT_BASE_URL;
+    void reconnect(nextBaseUrl);
+  });
+
+  refreshButton?.addEventListener("click", () => {
+    void loadFacilitiesAndSelection();
+  });
+
+  searchInput?.addEventListener("input", applySearchFilter);
+
+  document.querySelectorAll<HTMLButtonElement>("[data-facility-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      void selectFacility(button.dataset.facilityId ?? fallbackFacilityId);
+    });
+  });
+}
+
+function bindWorkspaceEvents(): void {
+  document.querySelectorAll<HTMLButtonElement>("[data-tab]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const tab = button.dataset.tab as AppState["activeTab"] | undefined;
+      if (!tab) {
+        return;
+      }
+      state.activeTab = tab;
+      renderWorkspaceIntoDom();
+    });
+  });
+}
+
+async function reconnect(baseUrl: string): Promise<void> {
+  state.baseUrl = baseUrl;
+  state.client = new AquaStatDesktopClient(baseUrl);
+  state.error = null;
+  state.loadingList = true;
+  state.loadingDetail = true;
+  renderSidebarIntoDom();
+  renderWorkspaceIntoDom();
+  await loadFacilitiesAndSelection();
+}
+
+async function loadFacilitiesAndSelection(): Promise<void> {
+  try {
+    state.loadingList = true;
+    renderSidebarIntoDom();
+    const facilities = await state.client.fetchFacilities();
+    state.facilities = facilities.items;
+    state.loadingList = false;
+    if (!state.facilities.some((facility) => facility.id === state.selectedFacilityId)) {
+      state.selectedFacilityId = state.facilities[0]?.id ?? fallbackFacilityId;
+    }
+    renderSidebarIntoDom();
+    await loadFacilityBundle(state.selectedFacilityId);
+  } catch (error) {
+    state.loadingList = false;
+    state.error = error instanceof Error ? error.message : "Unable to load facility list";
+    state.facilities = [];
+    renderSidebarIntoDom();
+    renderWorkspaceIntoDom();
+  }
+}
+
+async function selectFacility(facilityId: string): Promise<void> {
+  state.selectedFacilityId = facilityId;
+  renderSidebarIntoDom();
+  await loadFacilityBundle(facilityId);
+}
+
+async function loadFacilityBundle(facilityId: string): Promise<void> {
+  try {
+    state.loadingDetail = true;
+    state.error = null;
+    renderWorkspaceIntoDom();
+    const [detail, evidence, sources, history, templates] = await Promise.all([
+      state.client.fetchFacility(facilityId),
+      state.client.fetchFacilityEvidence(facilityId),
+      state.client.fetchFacilitySources(facilityId),
+      state.client.fetchFacilityHistory(facilityId),
+      state.client.fetchPublicRecordTemplates(facilityId),
+    ]);
+    state.bundle = { detail, evidence, sources, history, templates };
+  } catch (error) {
+    state.bundle = null;
+    state.error = error instanceof Error ? error.message : "Unable to load facility detail";
+  } finally {
+    state.loadingDetail = false;
+    renderWorkspaceIntoDom();
+  }
 }
 
 async function run(): Promise<void> {
   injectStyles();
-
-  const root = document.createElement("main");
-  root.className = "shell";
-  root.innerHTML = `<div class="loading">Loading AquaStat desktop facility intelligence...</div>`;
-  document.body.append(root);
-
-  try {
-    const [facility, templates] = await Promise.all([
-      client.fetchFacility(facilityId),
-      client.fetchPublicRecordTemplates(facilityId),
-    ]);
-
-    root.innerHTML = `
-      <section class="hero">
-        <div class="hero-card">
-          <div class="status-chip">Desktop Control Surface</div>
-          <h1>${escapeHtml(facility.facility.name)}</h1>
-          <p>
-            Local-first AquaStat desktop workspace for reviewing facility evidence, contradiction risk,
-            and public-record request pathways before a water figure is trusted or reused.
-          </p>
-          <div class="summary-grid">
-            <article class="stat">
-              <div class="stat-label">Operator</div>
-              <div class="stat-value">${escapeHtml(facility.facility.operator)}</div>
-            </article>
-            <article class="stat">
-              <div class="stat-label">Data Quality</div>
-              <div class="stat-value">${facility.facility.data_quality.score.toFixed(2)}</div>
-            </article>
-            <article class="stat">
-              <div class="stat-label">Evidence Class</div>
-              <div class="stat-value">${escapeHtml(facility.primary_water_figure?.evidence_class ?? "Level U")}</div>
-            </article>
-            <article class="stat">
-              <div class="stat-label">Contradictions</div>
-              <div class="stat-value">${facility.contradictory_claims.length}</div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="layout">
-        <article class="panel">
-          <h2>Primary Water Figure</h2>
-          <p class="panel-intro">
-            AquaStat promotes only one primary figure at a time and keeps conflicting claims visible.
-          </p>
-          ${renderEvidence(facility.primary_water_figure)}
-          <div class="insight-grid">
-            <article class="stat">
-              <div class="stat-label">Facility Type</div>
-              <div class="stat-value">${escapeHtml(facility.facility.facility_type)}</div>
-            </article>
-            <article class="stat">
-              <div class="stat-label">Operational Status</div>
-              <div class="stat-value">${escapeHtml(facility.facility.operational_status)}</div>
-            </article>
-            <article class="stat">
-              <div class="stat-label">Country</div>
-              <div class="stat-value">${escapeHtml(facility.facility.country)}</div>
-            </article>
-            <article class="stat">
-              <div class="stat-label">Known Holders</div>
-              <div class="stat-value">${templates.known_holders.length}</div>
-            </article>
-          </div>
-        </article>
-
-        <article class="panel">
-          <h2>Public Record Retrieval</h2>
-          <p class="panel-intro">
-            Suggested authorities and ready-to-edit request templates for lawful follow-up.
-          </p>
-          ${renderTemplateList(templates)}
-        </article>
-      </section>
-
-      <section class="layout" style="margin-top: 20px;">
-        <article class="panel">
-          <h2>Contradictory Claims</h2>
-          <p class="panel-intro">
-            Competing figures stay visible so reviewers can challenge green claims before publishing them.
-          </p>
-          ${renderClaims(facility.contradictory_claims)}
-        </article>
-
-        <article class="panel">
-          <h2>Why This Desktop Shell Exists</h2>
-          <p class="panel-intro">
-            The desktop package is intentionally local-first. It gives analysts a typed surface for
-            reviewing evidence, sources, and retrieval pathways without needing a separate web product.
-          </p>
-          <ul>
-            <li>Strict TypeScript source with a typed AquaStat client.</li>
-            <li>Facility detail and public-record workflows wired into real API endpoints.</li>
-            <li>Small enough to evolve into Electron, Tauri, or a packaged internal desktop app.</li>
-          </ul>
-        </article>
-      </section>
-    `;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown desktop startup error";
-    root.innerHTML = `
-      <div class="error">
-        AquaStat desktop could not load local data.<br><br>
-        ${escapeHtml(message)}<br><br>
-        Start the API locally at http://127.0.0.1:8080 and refresh the page.
-      </div>
-    `;
-  }
+  mountShell();
+  renderSidebarIntoDom();
+  renderWorkspaceIntoDom();
+  await loadFacilitiesAndSelection();
 }
 
 void run();

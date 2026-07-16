@@ -1,11 +1,19 @@
 import json
+import os
 from pathlib import Path
 import sys
+import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 root_str = str(ROOT)
 if root_str not in sys.path:
     sys.path.insert(0, root_str)
+
+with (ROOT / "pyproject.toml").open("rb") as handle:
+    project_metadata = tomllib.load(handle)
+
+project_version = project_metadata["project"]["version"]
+os.environ["AQUASTAT_APP_VERSION"] = project_version
 
 from app.main import app
 from app.openapi import render_openapi_yaml

@@ -1,4 +1,11 @@
-import type { FacilityDetailResponse, PublicRecordTemplateResponse } from "./types.js";
+import type {
+  FacilityChangesResponse,
+  FacilityDetailResponse,
+  FacilityEvidenceResponse,
+  FacilityListResponse,
+  FacilitySourcesResponse,
+  PublicRecordTemplateResponse,
+} from "./types.js";
 
 export class AquaStatDesktopClient {
   constructor(private readonly baseUrl: string) {}
@@ -13,6 +20,22 @@ export class AquaStatDesktopClient {
 
   fetchFacility(facilityId: string): Promise<FacilityDetailResponse> {
     return this.request<FacilityDetailResponse>(`/api/v1/facilities/${facilityId}`);
+  }
+
+  fetchFacilities(): Promise<FacilityListResponse> {
+    return this.request<FacilityListResponse>("/api/v1/facilities?limit=20");
+  }
+
+  fetchFacilityEvidence(facilityId: string): Promise<FacilityEvidenceResponse> {
+    return this.request<FacilityEvidenceResponse>(`/api/v1/facilities/${facilityId}/evidence`);
+  }
+
+  fetchFacilitySources(facilityId: string): Promise<FacilitySourcesResponse> {
+    return this.request<FacilitySourcesResponse>(`/api/v1/facilities/${facilityId}/sources`);
+  }
+
+  fetchFacilityHistory(facilityId: string): Promise<FacilityChangesResponse> {
+    return this.request<FacilityChangesResponse>(`/api/v1/facilities/${facilityId}/history`);
   }
 
   fetchPublicRecordTemplates(facilityId: string): Promise<PublicRecordTemplateResponse> {
