@@ -25,22 +25,31 @@ Limitation:
 AquaStat is a research and estimation platform. Facility records may be synthetic, incomplete, conflicting, outdated, or based on public-planning-style documents rather than verified operational measurements. AquaStat results are not regulatory findings or audited disclosures.
 
 Control Center:
-`https://YOUR-SERVICE.up.railway.app/control-center`
+Pending Railway deployment
 
 Production API:
-`https://YOUR-SERVICE.up.railway.app`
+Pending Railway deployment
 
 Interactive documentation:
-`https://YOUR-SERVICE.up.railway.app/docs`
+Pending Railway deployment
 
 OpenAPI:
-`https://YOUR-SERVICE.up.railway.app/openapi.json`
+Pending Railway deployment
 
 OpenAPI YAML:
-`https://YOUR-SERVICE.up.railway.app/openapi.yaml`
+Pending Railway deployment
 
 Health:
-`https://YOUR-SERVICE.up.railway.app/health`
+Pending Railway deployment
+
+GitHub Pages:
+`https://magnexis.github.io/aquastat/`
+
+GitHub Pages OpenAPI:
+`https://magnexis.github.io/aquastat/openapi.json`
+
+GitHub Pages OpenAPI YAML:
+`https://magnexis.github.io/aquastat/openapi.yaml`
 
 ## What Problem It Solves
 
