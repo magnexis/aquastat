@@ -25,22 +25,22 @@ Limitation:
 AquaStat is a research and estimation platform. Facility records may be synthetic, incomplete, conflicting, outdated, or based on public-planning-style documents rather than verified operational measurements. AquaStat results are not regulatory findings or audited disclosures.
 
 Control Center:
-Pending Railway deployment
+Pending Render deployment
 
 Production API:
-Pending Railway deployment
+Pending Render deployment
 
 Interactive documentation:
-Pending Railway deployment
+Pending Render deployment
 
 OpenAPI:
-Pending Railway deployment
+Pending Render deployment
 
 OpenAPI YAML:
-Pending Railway deployment
+Pending Render deployment
 
 Health:
-Pending Railway deployment
+Pending Render deployment
 
 GitHub Pages:
 `https://magnexis.github.io/aquastat/`
@@ -101,7 +101,7 @@ Managed control-center keys support scoped access such as `calculations:read`, `
 ### cURL
 
 ```bash
-curl -sS "https://YOUR-SERVICE.up.railway.app/api/v1/estimate?provider=aws&region=us-east-1&load_mw=2.5" \
+curl -sS "$AQUASTAT_BASE_URL/api/v1/estimate?provider=aws&region=us-east-1&load_mw=2.5" \
   -H "X-API-Key: aq_live_your_key"
 ```
 
@@ -109,7 +109,7 @@ curl -sS "https://YOUR-SERVICE.up.railway.app/api/v1/estimate?provider=aws&regio
 
 ```js
 const response = await fetch(
-  "https://YOUR-SERVICE.up.railway.app/api/v1/estimate?provider=aws&region=us-east-1&load_mw=2.5",
+  `${process.env.AQUASTAT_BASE_URL}/api/v1/estimate?provider=aws&region=us-east-1&load_mw=2.5`,
   { headers: { "X-API-Key": process.env.AQUASTAT_API_KEY } }
 );
 console.log(await response.json());
@@ -122,7 +122,7 @@ import os
 import httpx
 
 response = httpx.get(
-    "https://YOUR-SERVICE.up.railway.app/api/v1/estimate",
+    f"{os.environ['AQUASTAT_BASE_URL']}/api/v1/estimate",
     params={"provider": "aws", "region": "us-east-1", "load_mw": 2.5},
     headers={"X-API-Key": os.environ["AQUASTAT_API_KEY"]},
     timeout=10.0,
@@ -198,10 +198,13 @@ Run tests:
 pytest
 ```
 
-## Railway Deployment
+## Render Deployment
 
-- Config: [railway.json](/abs/path/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/railway.json)
-- Guide: [docs/deployment-railway.md](/abs/path/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/docs/deployment-railway.md)
+- Config: [render.yaml](/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/render.yaml)
+- Guide: [docs/deployment-render.md](/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/docs/deployment-render.md)
+
+Current hosted status:
+Render deployment is prepared in-repo but not yet verified from this environment because no authenticated Render deployment session or API token is available here.
 
 To enable durable control-center state in production, install the normal database dependencies and apply [sql/schema.sql](/abs/path/C:/Users/matth/OneDrive/Desktop/we%20lit/aquastat/sql/schema.sql) before expecting request history, managed keys, and audit events to persist across restarts.
 

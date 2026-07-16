@@ -30,7 +30,7 @@ COPY --from=builder /install /usr/local
 COPY app /app/app
 COPY scripts /app/scripts
 COPY sql /app/sql
-COPY README.md pyproject.toml railway.json prometheus.yml /app/
+COPY README.md pyproject.toml render.yaml prometheus.yml /app/
 
 USER appuser
 

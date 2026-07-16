@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: aquastat-api
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /health/ready
+    envVars:
+      - key: AQUASTAT_ENVIRONMENT
+        value: production
+      - key: AQUASTAT_HOST
+        value: 0.0.0.0
+      - key: AQUASTAT_PORT
+        value: "10000"
+      - key: AQUASTAT_PUBLIC_BASE_URL
+        sync: false
+      - key: AQUASTAT_DATABASE_URL
+        sync: false
+      - key: AQUASTAT_DIRECT_DATABASE_URL
+        sync: false
+      - key: AQUASTAT_REDIS_ENABLED
+        value: "false"
+      - key: AQUASTAT_API_KEY_HASHES
+        sync: false
+      - key: AQUASTAT_ADMIN_API_KEY_HASHES
+        sync: false
+      - key: AQUASTAT_CORS_ALLOWED_ORIGINS
+        sync: false
+      - key: AQUASTAT_LOG_LEVEL
+        value: info
+      - key: AQUASTAT_TRUST_PROXY
+        value: "true"

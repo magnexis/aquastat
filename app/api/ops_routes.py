@@ -544,8 +544,9 @@ CONTROL_CENTER_HTML = """
       const region = document.getElementById("region").value;
       const loadMw = document.getElementById("loadMw").value;
       const key = adminKeyInput.value || "aq_live_your_key";
-      const curl = `curl -sS "https://YOUR-SERVICE.up.railway.app/api/v1/estimate?provider=${provider}&region=${region}&load_mw=${loadMw}" -H "X-API-Key: ${key}"`;
-      const python = `import httpx\\nresponse = httpx.get("https://YOUR-SERVICE.up.railway.app/api/v1/estimate", params={"provider": "${provider}", "region": "${region}", "load_mw": ${loadMw}}, headers={"X-API-Key": "${key}"})\\nprint(response.json())`;
+      const baseUrl = window.location.origin === "null" ? "https://YOUR-RENDER-SERVICE.onrender.com" : window.location.origin;
+      const curl = `curl -sS "${baseUrl}/api/v1/estimate?provider=${provider}&region=${region}&load_mw=${loadMw}" -H "X-API-Key: ${key}"`;
+      const python = `import httpx\\nresponse = httpx.get("${baseUrl}/api/v1/estimate", params={"provider": "${provider}", "region": "${region}", "load_mw": ${loadMw}}, headers={"X-API-Key": "${key}"})\\nprint(response.json())`;
       navigator.clipboard.writeText(kind === "curl" ? curl : python);
     }
 

@@ -8,9 +8,9 @@ AquaStat is distributed as a backend-first developer product. The main public en
 
 Use GitHub as the canonical home for source, issues, changelog, deployment instructions, and self-hosting guidance. The root `README.md` should remain the primary landing page.
 
-## Railway
+## Render and Neon
 
-Railway is the default hosted deployment target. After deployment, replace the placeholder base URL in the README, Postman environment example, and marketplace listing drafts with the Railway-generated public URL.
+Render is the recommended hosted API target and Neon is the recommended persistent PostgreSQL provider. After deployment, replace the placeholder base URL in the README, Postman environment example, and marketplace listing drafts with the verified Render public URL.
 
 ## Docker and Self-Hosting
 

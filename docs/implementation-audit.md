@@ -26,7 +26,7 @@
 - Error responses were inconsistent across validation, auth, not-found, and rate-limit cases
 - Request IDs and structured request logging were missing
 - API-key auth existed only as loose groundwork, not a documented production flow
-- No Railway-specific deployment instructions
+- No provider-neutral hosted deployment instructions
 - README was informative but not yet acting as the full public homepage
 - Missing Postman collection, examples, GitHub community files, and distribution docs
 - Docker image was not optimized for small, non-root runtime
@@ -47,12 +47,12 @@
 - Added standardized `/health`, `/api/v1/status`, and `/api/v1/info`
 - Added `/api/v1` aliases for major v2 functionality while preserving existing routes
 - Added API-key generation and OpenAPI generation scripts
-- Added Railway config, `.dockerignore`, and an improved production Dockerfile
+- Added hosted deployment config, `.dockerignore`, and an improved production Dockerfile
 - Added docs, examples, Postman assets, and GitHub repository metadata files
 
 ## Assumptions
 
 - AquaStat remains a FastAPI backend-first project and should continue to rely on built-in Swagger/OpenAPI instead of a separate frontend
 - Initial authentication mode is environment-backed hashed API keys, with room for database-backed API keys later
-- Railway is the primary public deployment target, but container portability is still required
+- Hosted deployment should remain provider-neutral, with Render/Neon as the current recommended path and container portability preserved
 - Existing deployed URLs are not yet known, so production URLs remain placeholders until a real deployment exists
