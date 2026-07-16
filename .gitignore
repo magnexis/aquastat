@@ -17,3 +17,6 @@ desktop/dist/
 js-sdk/dist/
 sdk/dist/
 openapi/__pycache__/
+release-assets/
+*.tgz
+desktop/aquastat-desktop-dist.zip

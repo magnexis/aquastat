@@ -8,7 +8,7 @@ paths:
   /metrics:
     get:
       summary: Metrics
-      operationId: metrics_metrics_get
+      operationId: get_metrics
       responses:
         '200':
           description: Successful Response
@@ -21,12 +21,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/status:
     get:
       tags:
       - meta
       summary: Get Status
-      operationId: get_status_api_v1_status_get
+      operationId: get_api_v1_status
       responses:
         '200':
           description: Successful Response
@@ -40,12 +58,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/info:
     get:
       tags:
       - meta
       summary: Get Info
-      operationId: get_info_api_v1_info_get
+      operationId: get_api_v1_info
       responses:
         '200':
           description: Successful Response
@@ -59,12 +95,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/health:
     get:
       tags:
       - meta
       summary: Get Health
-      operationId: get_health_api_v1_health_get
+      operationId: get_api_v1_health
       responses:
         '200':
           description: Successful Response
@@ -78,13 +132,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/regions:
     get:
       summary: Get Regions
-      operationId: get_regions_api_v1_regions_get
+      operationId: get_api_v1_regions
       responses:
         '200':
           description: Successful Response
@@ -101,10 +170,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/estimate:
     get:
       summary: Get Estimate
-      operationId: get_estimate_api_v1_estimate_get
+      operationId: get_api_v1_estimate
       parameters:
       - name: provider
         in: query
@@ -148,6 +235,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -156,7 +261,7 @@ paths:
       tags:
       - facilities
       summary: Get Facilities
-      operationId: get_facilities_api_v1_facilities_get
+      operationId: get_api_v1_facilities
       parameters:
       - name: query
         in: query
@@ -242,6 +347,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -250,7 +373,7 @@ paths:
       tags:
       - facilities
       summary: Get Facility
-      operationId: get_facility_api_v1_facilities__facility_id__get
+      operationId: get_api_v1_facilities_facility_id
       parameters:
       - name: facility_id
         in: path
@@ -277,6 +400,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -285,7 +426,7 @@ paths:
       tags:
       - facilities
       summary: Get Facility By Slug Route
-      operationId: get_facility_by_slug_route_api_v1_facilities_slug__slug__get
+      operationId: get_api_v1_facilities_slug_slug
       parameters:
       - name: slug
         in: path
@@ -312,6 +453,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -320,7 +479,7 @@ paths:
       tags:
       - facilities
       summary: Get Facility Evidence Route
-      operationId: get_facility_evidence_route_api_v1_facilities__facility_id__evidence_get
+      operationId: get_api_v1_facilities_facility_id_evidence
       parameters:
       - name: facility_id
         in: path
@@ -347,6 +506,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -355,7 +532,7 @@ paths:
       tags:
       - facilities
       summary: Get Facility Sources Route
-      operationId: get_facility_sources_route_api_v1_facilities__facility_id__sources_get
+      operationId: get_api_v1_facilities_facility_id_sources
       parameters:
       - name: facility_id
         in: path
@@ -382,6 +559,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -390,7 +585,7 @@ paths:
       tags:
       - facilities
       summary: Get Public Record Templates Route
-      operationId: get_public_record_templates_route_api_v1_facilities__facility_id__public_records_templates_get
+      operationId: get_api_v1_facilities_facility_id_public_records_templates
       parameters:
       - name: facility_id
         in: path
@@ -417,6 +612,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -425,7 +638,7 @@ paths:
       tags:
       - facilities
       summary: Get Facility History Route
-      operationId: get_facility_history_route_api_v1_facilities__facility_id__history_get
+      operationId: get_api_v1_facilities_facility_id_history
       parameters:
       - name: facility_id
         in: path
@@ -448,6 +661,24 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
           content:
             application/json:
               schema:
@@ -460,7 +691,7 @@ paths:
       tags:
       - facilities
       summary: Get Facility Changes Route
-      operationId: get_facility_changes_route_api_v1_facilities__facility_id__changes_get
+      operationId: get_api_v1_facilities_facility_id_changes
       parameters:
       - name: facility_id
         in: path
@@ -487,6 +718,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -495,7 +744,7 @@ paths:
       tags:
       - facilities
       summary: Estimate Facility Route
-      operationId: estimate_facility_route_api_v1_facilities__facility_id__estimate_post
+      operationId: post_api_v1_facilities_facility_id_estimate
       parameters:
       - name: facility_id
         in: path
@@ -522,6 +771,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -530,7 +797,7 @@ paths:
       tags:
       - facilities
       summary: Estimate Facility Batch Route
-      operationId: estimate_facility_batch_route_api_v1_facilities_estimate_batch_post
+      operationId: post_api_v1_facilities_estimate_batch
       requestBody:
         content:
           application/json:
@@ -556,6 +823,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -564,7 +849,7 @@ paths:
       tags:
       - facilities
       summary: Compare Facilities Route
-      operationId: compare_facilities_route_api_v1_facilities_compare_post
+      operationId: post_api_v1_facilities_compare
       requestBody:
         content:
           application/json:
@@ -590,6 +875,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -598,7 +901,7 @@ paths:
       tags:
       - exports
       summary: Export Facility Json Route
-      operationId: export_facility_json_route_api_v1_facilities__facility_id__export_json_get
+      operationId: get_api_v1_facilities_facility_id_export.json
       parameters:
       - name: facility_id
         in: path
@@ -625,6 +928,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -633,7 +954,7 @@ paths:
       tags:
       - exports
       summary: Export Facilities Route
-      operationId: export_facilities_route_api_v1_facilities_export_post
+      operationId: post_api_v1_facilities_export
       requestBody:
         content:
           application/json:
@@ -659,6 +980,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -667,7 +1006,7 @@ paths:
       tags:
       - organizations
       summary: Get Organizations
-      operationId: get_organizations_api_v1_organizations_get
+      operationId: get_api_v1_organizations
       responses:
         '200':
           description: Successful Response
@@ -681,6 +1020,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -689,7 +1046,7 @@ paths:
       tags:
       - organizations
       summary: Get Organization Route
-      operationId: get_organization_route_api_v1_organizations__organization_id__get
+      operationId: get_api_v1_organizations_organization_id
       parameters:
       - name: organization_id
         in: path
@@ -716,6 +1073,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -724,7 +1099,7 @@ paths:
       tags:
       - organizations
       summary: Get Organization Facilities Route
-      operationId: get_organization_facilities_route_api_v1_organizations__organization_id__facilities_get
+      operationId: get_api_v1_organizations_organization_id_facilities
       parameters:
       - name: organization_id
         in: path
@@ -751,6 +1126,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -759,7 +1152,7 @@ paths:
       tags:
       - sources
       summary: List Source Connectors Route
-      operationId: list_source_connectors_route_api_v1_sources_connectors_get
+      operationId: get_api_v1_sources_connectors
       responses:
         '200':
           description: Successful Response
@@ -773,6 +1166,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -781,7 +1192,7 @@ paths:
       tags:
       - sources
       summary: Get Source Route
-      operationId: get_source_route_api_v1_sources__source_id__get
+      operationId: get_api_v1_sources_source_id
       parameters:
       - name: source_id
         in: path
@@ -808,6 +1219,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -816,7 +1245,7 @@ paths:
       tags:
       - corrections
       summary: Create Correction Route
-      operationId: create_correction_route_api_v1_corrections_post
+      operationId: post_api_v1_corrections
       requestBody:
         content:
           application/json:
@@ -842,6 +1271,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -850,7 +1297,7 @@ paths:
       tags:
       - ingestion
       summary: Create Ingestion Job Route
-      operationId: create_ingestion_job_route_api_v1_ingestion_jobs_post
+      operationId: post_api_v1_ingestion_jobs
       requestBody:
         content:
           application/json:
@@ -876,6 +1323,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -884,7 +1349,7 @@ paths:
       tags:
       - ingestion
       summary: Get Ingestion Job Route
-      operationId: get_ingestion_job_route_api_v1_ingestion_jobs__job_id__get
+      operationId: get_api_v1_ingestion_jobs_job_id
       parameters:
       - name: job_id
         in: path
@@ -907,6 +1372,24 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
           content:
             application/json:
               schema:
@@ -919,7 +1402,7 @@ paths:
       tags:
       - ingestion
       summary: Cancel Ingestion Job Route
-      operationId: cancel_ingestion_job_route_api_v1_ingestion_jobs__job_id__cancel_post
+      operationId: post_api_v1_ingestion_jobs_job_id_cancel
       parameters:
       - name: job_id
         in: path
@@ -946,6 +1429,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -954,7 +1455,7 @@ paths:
       tags:
       - admin
       summary: Get Review Queue
-      operationId: get_review_queue_api_v1_admin_review_get
+      operationId: get_api_v1_admin_review
       responses:
         '200':
           description: Successful Response
@@ -968,6 +1469,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -976,7 +1495,7 @@ paths:
       tags:
       - admin
       summary: Get Review Item Route
-      operationId: get_review_item_route_api_v1_admin_review__candidate_id__get
+      operationId: get_api_v1_admin_review_candidate_id
       parameters:
       - name: candidate_id
         in: path
@@ -1006,6 +1525,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1014,7 +1551,7 @@ paths:
       tags:
       - admin
       summary: Approve Review Item
-      operationId: approve_review_item_api_v1_admin_review__candidate_id__approve_post
+      operationId: post_api_v1_admin_review_candidate_id_approve
       parameters:
       - name: candidate_id
         in: path
@@ -1037,6 +1574,24 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
           content:
             application/json:
               schema:
@@ -1049,7 +1604,7 @@ paths:
       tags:
       - admin
       summary: Reject Review Item
-      operationId: reject_review_item_api_v1_admin_review__candidate_id__reject_post
+      operationId: post_api_v1_admin_review_candidate_id_reject
       parameters:
       - name: candidate_id
         in: path
@@ -1076,6 +1631,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1084,7 +1657,7 @@ paths:
       tags:
       - analytics
       summary: Get Benchmark V1
-      operationId: get_benchmark_v1_api_v1_benchmark_get
+      operationId: get_api_v1_benchmark
       responses:
         '200':
           description: Successful Response
@@ -1098,6 +1671,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1106,7 +1697,7 @@ paths:
       tags:
       - analytics
       summary: Get Stress Map V1
-      operationId: get_stress_map_v1_api_v1_stress_map_get
+      operationId: get_api_v1_stress_map
       responses:
         '200':
           description: Successful Response
@@ -1120,6 +1711,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1128,7 +1737,7 @@ paths:
       tags:
       - analytics
       summary: Route Workload V1
-      operationId: route_workload_v1_api_v1_route_workload_post
+      operationId: post_api_v1_route_workload
       requestBody:
         content:
           application/json:
@@ -1154,6 +1763,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1162,7 +1789,7 @@ paths:
       tags:
       - analytics
       summary: Upload Footprint Csv V1
-      operationId: upload_footprint_csv_v1_api_v1_footprint_post
+      operationId: post_api_v1_footprint
       requestBody:
         content:
           multipart/form-data:
@@ -1188,6 +1815,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1196,7 +1841,7 @@ paths:
       tags:
       - analytics
       summary: Footprint Calculator Ui V1
-      operationId: footprint_calculator_ui_v1_api_v1_footprint_calculator_get
+      operationId: get_api_v1_footprint_calculator
       responses:
         '200':
           description: Successful Response
@@ -1210,13 +1855,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
   /api/v2/estimate:
     get:
       summary: Get Estimate V2
-      operationId: get_estimate_v2_api_v2_estimate_get
+      operationId: get_api_v2_estimate
       parameters:
       - name: provider
         in: query
@@ -1260,13 +1923,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
   /api/v2/stress-map:
     get:
       summary: Get Stress Map
-      operationId: get_stress_map_api_v2_stress_map_get
+      operationId: get_api_v2_stress_map
       responses:
         '200':
           description: Successful Response
@@ -1280,13 +1961,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
   /api/v2/route-workload:
     post:
       summary: Route Workload
-      operationId: route_workload_api_v2_route_workload_post
+      operationId: post_api_v2_route_workload
       requestBody:
         content:
           application/json:
@@ -1312,13 +2011,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
   /api/v2/benchmark:
     get:
       summary: Get Benchmark
-      operationId: get_benchmark_api_v2_benchmark_get
+      operationId: get_api_v2_benchmark
       responses:
         '200':
           description: Successful Response
@@ -1332,13 +2049,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
   /api/v2/footprint:
     post:
       summary: Upload Footprint Csv
-      operationId: upload_footprint_csv_api_v2_footprint_post
+      operationId: post_api_v2_footprint
       requestBody:
         content:
           multipart/form-data:
@@ -1364,13 +2099,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
   /api/v2/footprint-calculator:
     get:
       summary: Footprint Calculator Ui
-      operationId: footprint_calculator_ui_api_v2_footprint_calculator_get
+      operationId: get_api_v2_footprint_calculator
       responses:
         '200':
           description: Successful Response
@@ -1384,15 +2137,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /health/live:
     get:
       tags:
       - meta
       summary: Get Liveness
-      operationId: get_liveness_health_live_get
+      operationId: get_health_live
       responses:
         '200':
           description: Successful Response
@@ -1406,15 +2174,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /health/ready:
     get:
       tags:
       - meta
       summary: Get Readiness
-      operationId: get_readiness_health_ready_get
+      operationId: get_health_ready
       responses:
         '200':
           description: Successful Response
@@ -1428,15 +2211,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /version:
     get:
       tags:
       - meta
       summary: Get Version
-      operationId: get_version_version_get
+      operationId: get_version
       responses:
         '200':
           description: Successful Response
@@ -1450,15 +2248,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/control-center/overview:
     get:
       tags:
       - control-center
       summary: Get Control Center Overview
-      operationId: get_control_center_overview_api_v1_control_center_overview_get
+      operationId: get_api_v1_control_center_overview
       responses:
         '200':
           description: Successful Response
@@ -1472,15 +2285,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/control-center/requests:
     get:
       tags:
       - control-center
       summary: Get Request Log
-      operationId: get_request_log_api_v1_control_center_requests_get
+      operationId: get_api_v1_control_center_requests
       responses:
         '200':
           description: Successful Response
@@ -1494,6 +2322,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1502,7 +2348,7 @@ paths:
       tags:
       - control-center
       summary: Get Models
-      operationId: get_models_api_v1_control_center_models_get
+      operationId: get_api_v1_control_center_models
       responses:
         '200':
           description: Successful Response
@@ -1516,15 +2362,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/control-center/api-keys:
     get:
       tags:
       - control-center
       summary: List Managed Keys
-      operationId: list_managed_keys_api_v1_control_center_api_keys_get
+      operationId: get_api_v1_control_center_api_keys
       responses:
         '200':
           description: Successful Response
@@ -1538,6 +2399,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1545,7 +2424,7 @@ paths:
       tags:
       - control-center
       summary: Create Managed Key
-      operationId: create_managed_key_api_v1_control_center_api_keys_post
+      operationId: post_api_v1_control_center_api_keys
       requestBody:
         content:
           application/json:
@@ -1571,6 +2450,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1579,7 +2476,7 @@ paths:
       tags:
       - control-center
       summary: Revoke Managed Key
-      operationId: revoke_managed_key_api_v1_control_center_api_keys__key_id__revoke_post
+      operationId: post_api_v1_control_center_api_keys_key_id_revoke
       parameters:
       - name: key_id
         in: path
@@ -1602,6 +2499,24 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
           content:
             application/json:
               schema:
@@ -1614,7 +2529,7 @@ paths:
       tags:
       - control-center
       summary: Disable Managed Key
-      operationId: disable_managed_key_api_v1_control_center_api_keys__key_id__disable_post
+      operationId: post_api_v1_control_center_api_keys_key_id_disable
       parameters:
       - name: key_id
         in: path
@@ -1641,6 +2556,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1649,7 +2582,7 @@ paths:
       tags:
       - control-center
       summary: Get Audit Logs
-      operationId: get_audit_logs_api_v1_control_center_audit_logs_get
+      operationId: get_api_v1_control_center_audit_logs
       responses:
         '200':
           description: Successful Response
@@ -1663,6 +2596,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -1671,7 +2622,7 @@ paths:
       tags:
       - control-center
       summary: Control Center Shell
-      operationId: control_center_shell_documentation_get
+      operationId: get_documentation
       responses:
         '200':
           description: Successful Response
@@ -1685,15 +2636,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /requests:
     get:
       tags:
       - control-center
       summary: Control Center Shell
-      operationId: control_center_shell_requests_get
+      operationId: get_requests
       responses:
         '200':
           description: Successful Response
@@ -1707,15 +2673,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api-keys:
     get:
       tags:
       - control-center
       summary: Control Center Shell
-      operationId: control_center_shell_api_keys_get
+      operationId: get_api_keys
       responses:
         '200':
           description: Successful Response
@@ -1729,15 +2710,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /facilities:
     get:
       tags:
       - control-center
       summary: Control Center Shell
-      operationId: control_center_shell_facilities_get
+      operationId: get_facilities
       responses:
         '200':
           description: Successful Response
@@ -1751,15 +2747,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /calculate:
     get:
       tags:
       - control-center
       summary: Control Center Shell
-      operationId: control_center_shell_calculate_get
+      operationId: get_calculate
       responses:
         '200':
           description: Successful Response
@@ -1773,15 +2784,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /overview:
     get:
       tags:
       - control-center
       summary: Control Center Shell
-      operationId: control_center_shell_overview_get
+      operationId: get_overview
       responses:
         '200':
           description: Successful Response
@@ -1795,15 +2821,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /control-center:
     get:
       tags:
       - control-center
       summary: Control Center Shell
-      operationId: control_center_shell_control_center_get
+      operationId: get_control_center
       responses:
         '200':
           description: Successful Response
@@ -1817,15 +2858,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-      - ApiKeyAuth: []
-      - BearerAuth: []
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /health:
     get:
       tags:
       - meta
       summary: Get Health
-      operationId: get_health_health_get
+      operationId: get_health
       responses:
         '200':
           description: Successful Response
@@ -1835,6 +2891,24 @@ paths:
                 $ref: '#/components/schemas/HealthResponse'
         '401':
           description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
           content:
             application/json:
               schema:
@@ -4277,10 +5351,29 @@ components:
               type: string
             requestId:
               type: string
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+                required:
+                - field
+                - message
           required:
           - code
           - message
           - requestId
+          example:
+            code: VALIDATION_ERROR
+            message: The request contains invalid data.
+            requestId: req_1234567890
+            details:
+            - field: provider
+              message: Field required
       required:
       - error
   securitySchemes:
@@ -4292,5 +5385,7 @@ components:
       type: http
       scheme: bearer
 servers:
+- url: http://localhost:8080
+  description: Local development
 - url: http://127.0.0.1:8080
-  description: Railway deployment URL placeholder
+  description: Configured public deployment

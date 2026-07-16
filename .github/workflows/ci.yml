@@ -76,3 +76,11 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t aquastat-api:test .
+
+      - name: Smoke test Docker image
+        run: |
+          docker run -d --name aquastat-smoke -p 18080:8080 aquastat-api:test
+          sleep 8
+          curl --fail http://127.0.0.1:18080/health
+          curl --fail http://127.0.0.1:18080/openapi.json > /dev/null
+          docker rm -f aquastat-smoke
