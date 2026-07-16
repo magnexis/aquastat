@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1
+
+- Added production-ready Square billing configuration docs, env examples, and a verifier script for live credential checks
+- Extended webhook guidance and tests to cover both `payment.created` and `payment.updated` while only issuing credits after settled payment states
+- Tightened quota exhaustion behavior so `429` remains deny-only while project-backed `402` responses can surface a refill checkout link
+- Removed the unused pytest `asyncio_mode` config warning and synchronized package/runtime metadata to `1.1.1`
+
 ## 1.1.0
 
 - Added a first-party `aquastat` CLI with status, region, estimate, facility, and workload-routing commands

@@ -3,7 +3,7 @@
   "info": {
     "title": "AquaStat API",
     "description": "Water-aware infrastructure API for estimating data center water usage and WUE.",
-    "version": "1.1.0"
+    "version": "1.1.1"
   },
   "paths": {
     "/metrics": {
@@ -357,6 +357,959 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/EstimateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/packages": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Get Billing Packages",
+        "operationId": "get_api_v1_billing_packages",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingPackagesEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/projects": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Get Billing Projects",
+        "operationId": "get_api_v1_billing_projects",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingProjectsEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Post Billing Project",
+        "operationId": "post_api_v1_billing_projects",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBillingProjectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingProjectResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/projects/{project_id}": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Get Billing Project",
+        "operationId": "get_api_v1_billing_projects_project_id",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingProjectResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/projects/{project_id}/usage": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Get Billing Project Usage",
+        "operationId": "get_api_v1_billing_projects_project_id_usage",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingProjectUsageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/projects/{project_id}/usage.csv": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Get Billing Project Usage Csv",
+        "operationId": "get_api_v1_billing_projects_project_id_usage.csv",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/projects/{project_id}/grants": {
+      "post": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Post Billing Project Grant",
+        "operationId": "post_api_v1_billing_projects_project_id_grants",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Project Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrantProjectCreditsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrantProjectCreditsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/webhooks/square": {
+      "post": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Post Square Webhook",
+        "operationId": "post_api_v1_billing_webhooks_square",
+        "parameters": [
+          {
+            "name": "x-square-hmacsha256-signature",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Square-Hmacsha256-Signature"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingWebhookResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/billing/quota/{api_key_id}": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Get Billing Quota",
+        "operationId": "get_api_v1_billing_quota_api_key_id",
+        "parameters": [
+          {
+            "name": "api_key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Api Key Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingQuotaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/checkout-sessions": {
+      "post": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Post Checkout Session",
+        "operationId": "post_api_v1_billing_checkout_sessions",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCheckoutSessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/billing/checkout-sessions/{session_id}": {
+      "get": {
+        "tags": [
+          "billing"
+        ],
+        "summary": "Get Checkout Session Route",
+        "operationId": "get_api_v1_billing_checkout_sessions_session_id",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Session Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutSessionResponse"
                 }
               }
             }
@@ -5287,6 +6240,646 @@
         ],
         "title": "BenchmarkResponse"
       },
+      "BillingAlertResponse": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "severity": {
+            "type": "string",
+            "title": "Severity"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "project_id": {
+            "type": "string",
+            "title": "Project Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "severity",
+          "message",
+          "project_id"
+        ],
+        "title": "BillingAlertResponse"
+      },
+      "BillingPackageResponse": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "amount_minor": {
+            "type": "integer",
+            "title": "Amount Minor"
+          },
+          "formatted_price": {
+            "type": "string",
+            "title": "Formatted Price"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "requests_granted": {
+            "type": "integer",
+            "title": "Requests Granted"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "display_order": {
+            "type": "integer",
+            "title": "Display Order"
+          },
+          "package_version": {
+            "type": "string",
+            "title": "Package Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "amount_minor",
+          "formatted_price",
+          "currency",
+          "requests_granted",
+          "active",
+          "environment",
+          "display_order",
+          "package_version"
+        ],
+        "title": "BillingPackageResponse"
+      },
+      "BillingPackagesEnvelope": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BillingPackageResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "billing_status": {
+            "type": "string",
+            "title": "Billing Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "billing_status"
+        ],
+        "title": "BillingPackagesEnvelope"
+      },
+      "BillingPlanResponse": {
+        "properties": {
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "monthly_price_minor": {
+            "type": "integer",
+            "title": "Monthly Price Minor"
+          },
+          "included_requests": {
+            "type": "integer",
+            "title": "Included Requests"
+          }
+        },
+        "type": "object",
+        "required": [
+          "slug",
+          "name",
+          "monthly_price_minor",
+          "included_requests"
+        ],
+        "title": "BillingPlanResponse"
+      },
+      "BillingProjectResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "monthly_budget_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Monthly Budget Minor"
+          },
+          "soft_budget_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Soft Budget Minor"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "owner_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Email"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "subscription": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BillingSubscriptionResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "environment",
+          "status",
+          "currency",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "BillingProjectResponse"
+      },
+      "BillingProjectUsageResponse": {
+        "properties": {
+          "project": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Project"
+          },
+          "subscription": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BillingSubscriptionResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "keys_total": {
+            "type": "integer",
+            "title": "Keys Total"
+          },
+          "keys": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Keys"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/BillingProjectUsageTotals"
+          },
+          "alerts": {
+            "items": {
+              "$ref": "#/components/schemas/BillingAlertResponse"
+            },
+            "type": "array",
+            "title": "Alerts"
+          },
+          "usage_activity": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Usage Activity"
+          }
+        },
+        "type": "object",
+        "required": [
+          "project",
+          "keys_total",
+          "keys",
+          "usage",
+          "alerts",
+          "usage_activity"
+        ],
+        "title": "BillingProjectUsageResponse"
+      },
+      "BillingProjectUsageTotals": {
+        "properties": {
+          "included_requests": {
+            "type": "integer",
+            "title": "Included Requests"
+          },
+          "prepaid_remaining_requests": {
+            "type": "integer",
+            "title": "Prepaid Remaining Requests"
+          },
+          "consumed_requests": {
+            "type": "integer",
+            "title": "Consumed Requests"
+          },
+          "estimated_spend_minor": {
+            "type": "integer",
+            "title": "Estimated Spend Minor"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "monthly_budget_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Monthly Budget Minor"
+          },
+          "soft_budget_minor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Soft Budget Minor"
+          },
+          "budget_state": {
+            "type": "string",
+            "title": "Budget State"
+          },
+          "low_credit_threshold_requests": {
+            "type": "integer",
+            "title": "Low Credit Threshold Requests"
+          },
+          "low_credit": {
+            "type": "boolean",
+            "title": "Low Credit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "included_requests",
+          "prepaid_remaining_requests",
+          "consumed_requests",
+          "estimated_spend_minor",
+          "currency",
+          "budget_state",
+          "low_credit_threshold_requests",
+          "low_credit"
+        ],
+        "title": "BillingProjectUsageTotals"
+      },
+      "BillingProjectsEnvelope": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BillingProjectResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "plans": {
+            "items": {
+              "$ref": "#/components/schemas/BillingPlanResponse"
+            },
+            "type": "array",
+            "title": "Plans"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "plans"
+        ],
+        "title": "BillingProjectsEnvelope"
+      },
+      "BillingQuotaGrantSummary": {
+        "properties": {
+          "grant_id": {
+            "type": "string",
+            "title": "Grant Id"
+          },
+          "grant_type": {
+            "type": "string",
+            "title": "Grant Type"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "requests_granted": {
+            "type": "integer",
+            "title": "Requests Granted"
+          },
+          "requests_consumed": {
+            "type": "integer",
+            "title": "Requests Consumed"
+          },
+          "requests_remaining": {
+            "type": "integer",
+            "title": "Requests Remaining"
+          },
+          "package_slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Package Slug"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "grant_id",
+          "grant_type",
+          "status",
+          "requests_granted",
+          "requests_consumed",
+          "requests_remaining"
+        ],
+        "title": "BillingQuotaGrantSummary"
+      },
+      "BillingQuotaResponse": {
+        "properties": {
+          "api_key_id": {
+            "type": "string",
+            "title": "Api Key Id"
+          },
+          "api_key_prefix": {
+            "type": "string",
+            "title": "Api Key Prefix"
+          },
+          "included_requests": {
+            "type": "integer",
+            "title": "Included Requests"
+          },
+          "remaining_requests": {
+            "type": "integer",
+            "title": "Remaining Requests"
+          },
+          "purchased_remaining_requests": {
+            "type": "integer",
+            "title": "Purchased Remaining Requests"
+          },
+          "total_remaining_requests": {
+            "type": "integer",
+            "title": "Total Remaining Requests"
+          },
+          "grants": {
+            "items": {
+              "$ref": "#/components/schemas/BillingQuotaGrantSummary"
+            },
+            "type": "array",
+            "title": "Grants"
+          },
+          "billing_status": {
+            "type": "string",
+            "title": "Billing Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "api_key_id",
+          "api_key_prefix",
+          "included_requests",
+          "remaining_requests",
+          "purchased_remaining_requests",
+          "total_remaining_requests",
+          "grants",
+          "billing_status"
+        ],
+        "title": "BillingQuotaResponse"
+      },
+      "BillingSubscriptionResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "project_id": {
+            "type": "string",
+            "title": "Project Id"
+          },
+          "plan_slug": {
+            "type": "string",
+            "title": "Plan Slug"
+          },
+          "plan_name": {
+            "type": "string",
+            "title": "Plan Name"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "billing_cycle": {
+            "type": "string",
+            "title": "Billing Cycle"
+          },
+          "included_requests": {
+            "type": "integer",
+            "title": "Included Requests"
+          },
+          "monthly_price_minor": {
+            "type": "integer",
+            "title": "Monthly Price Minor"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          },
+          "renews_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Renews At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "project_id",
+          "plan_slug",
+          "plan_name",
+          "status",
+          "billing_cycle",
+          "included_requests",
+          "monthly_price_minor",
+          "currency",
+          "starts_at"
+        ],
+        "title": "BillingSubscriptionResponse"
+      },
+      "BillingWebhookResponse": {
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "title": "Accepted"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "session_id": {
+            "type": "string",
+            "title": "Session Id"
+          },
+          "grant_issued": {
+            "type": "boolean",
+            "title": "Grant Issued"
+          },
+          "grant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Id"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "accepted",
+          "status",
+          "session_id",
+          "grant_issued",
+          "message"
+        ],
+        "title": "BillingWebhookResponse"
+      },
       "Body_upload_footprint_csv_api_v2_footprint_post": {
         "properties": {
           "file": {
@@ -5394,6 +6987,87 @@
           "status"
         ],
         "title": "CandidateFactResponse"
+      },
+      "CheckoutSessionResponse": {
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "title": "Session Id"
+          },
+          "public_token": {
+            "type": "string",
+            "title": "Public Token"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "package_slug": {
+            "type": "string",
+            "title": "Package Slug"
+          },
+          "amount_minor": {
+            "type": "integer",
+            "title": "Amount Minor"
+          },
+          "currency": {
+            "type": "string",
+            "title": "Currency"
+          },
+          "requests_expected": {
+            "type": "integer",
+            "title": "Requests Expected"
+          },
+          "checkout_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checkout Url"
+          },
+          "target_api_key_prefix": {
+            "type": "string",
+            "title": "Target Api Key Prefix"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "billing_status": {
+            "type": "string",
+            "title": "Billing Status"
+          },
+          "next_action": {
+            "type": "string",
+            "title": "Next Action"
+          }
+        },
+        "type": "object",
+        "required": [
+          "session_id",
+          "public_token",
+          "status",
+          "package_slug",
+          "amount_minor",
+          "currency",
+          "requests_expected",
+          "target_api_key_prefix",
+          "billing_status",
+          "next_action"
+        ],
+        "title": "CheckoutSessionResponse"
       },
       "ControlCenterOverviewResponse": {
         "properties": {
@@ -5581,6 +7255,88 @@
           "message"
         ],
         "title": "CorrectionResponse"
+      },
+      "CreateBillingProjectRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "environment": {
+            "type": "string",
+            "pattern": "^(development|testing|staging|production)$",
+            "title": "Environment"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "plan_slug": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Plan Slug"
+          },
+          "owner_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Owner Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "environment",
+          "plan_slug"
+        ],
+        "title": "CreateBillingProjectRequest"
+      },
+      "CreateCheckoutSessionRequest": {
+        "properties": {
+          "package_slug": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Package Slug"
+          },
+          "target_api_key_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Target Api Key Id"
+          },
+          "client_request_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Request Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "package_slug",
+          "target_api_key_id"
+        ],
+        "title": "CreateCheckoutSessionRequest"
       },
       "DataCenterSummary": {
         "properties": {
@@ -6819,6 +8575,60 @@
         ],
         "title": "GeoJsonFeature"
       },
+      "GrantProjectCreditsRequest": {
+        "properties": {
+          "api_key_id": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Api Key Id"
+          },
+          "package_slug": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Package Slug"
+          },
+          "requests_granted": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Requests Granted"
+          }
+        },
+        "type": "object",
+        "required": [
+          "api_key_id",
+          "package_slug",
+          "requests_granted"
+        ],
+        "title": "GrantProjectCreditsRequest"
+      },
+      "GrantProjectCreditsResponse": {
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "title": "Project Id"
+          },
+          "api_key_id": {
+            "type": "string",
+            "title": "Api Key Id"
+          },
+          "grant_id": {
+            "type": "string",
+            "title": "Grant Id"
+          },
+          "requests_granted": {
+            "type": "integer",
+            "title": "Requests Granted"
+          }
+        },
+        "type": "object",
+        "required": [
+          "project_id",
+          "api_key_id",
+          "grant_id",
+          "requests_granted"
+        ],
+        "title": "GrantProjectCreditsResponse"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -7075,6 +8885,18 @@
             "type": "array",
             "title": "Allowed Ips"
           },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
+          },
           "usage_limit": {
             "anyOf": [
               {
@@ -7185,6 +9007,17 @@
             },
             "type": "array",
             "title": "Allowed Ips"
+          },
+          "project_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Project Id"
           },
           "usage_limit": {
             "anyOf": [

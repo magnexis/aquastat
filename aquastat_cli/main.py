@@ -28,7 +28,7 @@ class CliContext:
     json_mode: bool
 
     def headers(self) -> dict[str, str]:
-        headers = {"User-Agent": "aquastat-cli/1.1.0"}
+        headers = {"User-Agent": "aquastat-cli/1.1.1"}
         if self.api_key:
             headers["X-API-Key"] = self.api_key
         return headers
