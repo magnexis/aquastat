@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/aquastat-logo.svg" alt="AquaStat logo" width="720">
+  <img src="docs/assets/aquastat-brand.png" alt="AquaStat logo" width="720">
 </p>
 
 <p align="center">

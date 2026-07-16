@@ -11,6 +11,7 @@ import type {
 
 const DEFAULT_BASE_URL = "http://127.0.0.1:8080";
 const fallbackFacilityId = "fac_syn_ashburn";
+const BRAND_IMAGE_URL = "../docs/assets/aquastat-brand.png";
 
 type DesktopBundle = {
   detail: FacilityDetailResponse;
@@ -127,6 +128,15 @@ function injectStyles(): void {
       margin-bottom: 22px;
     }
 
+    .hero-brand {
+      width: 170px;
+      max-width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 14px 32px rgba(13, 55, 62, 0.14);
+      background: rgba(255, 255, 255, 0.96);
+      padding: 10px;
+    }
+
     .hero-kicker {
       display: inline-flex;
       align-items: center;
@@ -214,6 +224,15 @@ function injectStyles(): void {
       display: grid;
       gap: 16px;
       align-content: start;
+    }
+
+    .sidebar-brand {
+      width: 100%;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 28px rgba(13, 55, 62, 0.12);
+      padding: 12px;
     }
 
     .sidebar h2,
@@ -992,6 +1011,7 @@ function renderWorkspace(): string {
           </p>
         </div>
         <div class="status-stack">
+          <img class="hero-brand" src="${BRAND_IMAGE_URL}" alt="AquaStat brand logo">
           <div class="status-pill">${escapeHtml(detail.facility.operator)} · ${escapeHtml(detail.facility.country)}</div>
           <div class="status-pill">${escapeHtml(detail.facility.verification_status)} · ${escapeHtml(detail.record_status)}</div>
         </div>
@@ -1045,6 +1065,7 @@ function renderSidebar(): string {
 
   return `
     <aside class="sidebar">
+      <img class="sidebar-brand" src="${BRAND_IMAGE_URL}" alt="AquaStat brand logo">
       <div>
         <div class="eyebrow">Connection</div>
         <h2>Desktop control surface</h2>

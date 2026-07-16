@@ -79,6 +79,11 @@ def build_index() -> str:
         radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 28%),
         var(--panel);
     }}
+    .brand {{
+      width: min(360px, 100%);
+      border-radius: 18px;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+    }}
     h1, h2 {{ margin: 0; }}
     p {{ margin: 0; line-height: 1.6; color: var(--muted); }}
     .grid {{
@@ -116,6 +121,7 @@ def build_index() -> str:
 <body>
   <main>
     <section class="hero">
+      <img class="brand" src="./docs/assets/aquastat-brand.png" alt="AquaStat brand logo">
       <h1>AquaStat Documentation</h1>
       <p>AquaStat is a developer-facing API for estimating direct and indirect data-center water impact, preserving provenance, confidence, and evidence classifications in every modeled response.</p>
       <p>Primary API docs live on the backend at <code>/docs</code>. This static site mirrors the operational guides, ships the OpenAPI files for client imports, and gives GitHub-hosted projects a stable documentation surface without a separate marketing site.</p>
@@ -166,9 +172,16 @@ def build_index() -> str:
 def main() -> None:
     SITE_DIR.mkdir(parents=True, exist_ok=True)
     (SITE_DIR / "docs").mkdir(parents=True, exist_ok=True)
+    (SITE_DIR / "docs" / "assets").mkdir(parents=True, exist_ok=True)
 
     for src in DOCS_DIR.glob("*.md"):
         _copy_file(src, SITE_DIR / "docs" / src.name)
+
+    assets_dir = DOCS_DIR / "assets"
+    if assets_dir.exists():
+        for src in assets_dir.iterdir():
+            if src.is_file():
+                _copy_file(src, SITE_DIR / "docs" / "assets" / src.name)
 
     for src in OPENAPI_DIR.glob("openapi.*"):
         _copy_file(src, SITE_DIR / src.name)
