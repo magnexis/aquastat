@@ -9,6 +9,7 @@
   <a href="https://github.com/magnexis/aquastat/blob/main/LICENSE"><img src="https://img.shields.io/github/license/magnexis/aquastat" alt="License"></a>
   <a href="https://github.com/magnexis/aquastat/blob/main/openapi/openapi.yaml"><img src="https://img.shields.io/badge/OpenAPI-3.1-0f766e" alt="OpenAPI 3.1"></a>
   <img src="https://img.shields.io/badge/Render-Live-46E3B7" alt="Render Live">
+  <img src="https://img.shields.io/badge/CLI-Now%20Included-1f7a8c" alt="CLI included">
 </p>
 
 # AquaStat API
@@ -65,6 +66,21 @@ The repository includes a local-first TypeScript desktop shell for facility revi
 ![AquaStat desktop overview](docs/assets/desktop-overview.svg)
 
 ![AquaStat desktop public records and contradiction review](docs/assets/desktop-records.svg)
+
+## Command Line Preview
+
+`aquastat` is now a real CLI for status checks, facility browsing, estimate lookups, and workload routing.
+
+```bash
+aquastat status
+aquastat regions
+aquastat estimate --provider aws --region us-east-1 --load-mw 2.5
+aquastat facilities --query ashburn
+aquastat route-workload --job-duration-hours 4 --compute-demand-mwh 12.5 \
+  --candidate-region aws:us-east-1 \
+  --candidate-region aws:eu-west-1 \
+  --candidate-region gcp:asia-southeast1
+```
 
 ## What Problem It Solves
 
@@ -214,6 +230,21 @@ Run tests:
 ```bash
 pytest
 ```
+
+### CLI setup
+
+The CLI is installed with the main Python package:
+
+```bash
+pip install -e .[dev]
+aquastat status
+```
+
+Useful flags:
+
+- `--base-url` to point at a local or hosted AquaStat API
+- `--api-key` to use a protected endpoint
+- `--json` for machine-readable output
 
 ### Desktop app setup
 

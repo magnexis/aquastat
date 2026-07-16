@@ -16,6 +16,7 @@ Current status:
 - local-mode oriented shell foundation
 - facility detail and lawful public-record template retrieval wired as the first desktop workflow
 - presentable review UI for facility evidence, contradiction tracking, and public-record templates
+- richer analyst workspace with facility browsing, source history, record tabs, and branded overview panels
 
 This is not yet a packaged Electron or Tauri product, but it is a real typed desktop-first foundation rather than a placeholder directory.
 
@@ -43,4 +44,5 @@ npm run build
 - Primary water figure confidence and evidence class
 - Contradictory claim surfacing instead of silent overwrites
 - Known public record holders and request-template guidance
+- Facility source history, evidence lists, and change-tracking panels
 - A local-first analyst workflow that can be evolved into Electron or Tauri later

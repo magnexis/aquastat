@@ -1,6 +1,6 @@
 [project]
 name = "aquastat-api"
-version = "1.0.1"
+version = "1.1.0"
 description = "AquaStat REST API for estimating data center water usage and WUE"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -32,8 +32,11 @@ dev = [
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project.scripts]
+aquastat = "aquastat_cli.main:main"
+
 [tool.setuptools.packages.find]
-include = ["app*"]
+include = ["app*", "aquastat_cli*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,12 +1,12 @@
 export class AquaStatClient {
-  constructor({ apiKey = null, apiUrl = "https://api.aquastat.org/api/v2", fetchImpl = globalThis.fetch } = {}) {
+  constructor({ apiKey = null, apiUrl = "https://aquastat-api.onrender.com/api/v1", fetchImpl = globalThis.fetch } = {}) {
     this.apiKey = apiKey;
     this.apiUrl = apiUrl.replace(/\/$/, "");
     this.fetchImpl = fetchImpl;
   }
 
   headers() {
-    const headers = { "User-Agent": "aquastat-sdk-js/1.0.1" };
+    const headers = { "User-Agent": "aquastat-sdk-js/1.1.0" };
     if (this.apiKey) headers["X-API-Key"] = this.apiKey;
     return headers;
   }

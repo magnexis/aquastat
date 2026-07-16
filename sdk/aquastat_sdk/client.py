@@ -58,14 +58,14 @@ class _AsyncProfileScope(AbstractAsyncContextManager):
 
 
 class AquaStatClient:
-    def __init__(self, api_key: str | None = None, api_url: str = "https://api.aquastat.org/api/v2") -> None:
+    def __init__(self, api_key: str | None = None, api_url: str = "https://aquastat-api.onrender.com/api/v1") -> None:
         self.api_url = api_url.rstrip("/")
         self.api_key = api_key
         self._sync = httpx.Client(timeout=10.0, headers=self._default_headers())
         self._async = httpx.AsyncClient(timeout=10.0, headers=self._default_headers())
 
     def _default_headers(self) -> dict[str, str]:
-        headers = {"User-Agent": "aquastat-sdk-python/1.0.1"}
+        headers = {"User-Agent": "aquastat-sdk-python/1.1.0"}
         if self.api_key:
             headers["X-API-Key"] = self.api_key
         return headers

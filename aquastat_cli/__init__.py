@@ -1,0 +1,2 @@
+"""AquaStat command-line interface."""
+

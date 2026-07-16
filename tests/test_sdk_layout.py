@@ -5,6 +5,7 @@ def test_sdk_package_files_exist() -> None:
     root = Path("sdk")
     assert (root / "setup.py").exists()
     assert (root / "aquastat_sdk" / "client.py").exists()
+    assert Path("aquastat_cli/main.py").exists()
     assert Path("js-sdk/package.json").exists()
     assert Path("go-sdk/go.mod").exists()
     assert Path("terraform/aws/main.tf").exists()

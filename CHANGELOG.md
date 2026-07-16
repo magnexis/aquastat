@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Added a first-party `aquastat` CLI with status, region, estimate, facility, and workload-routing commands
+- Refreshed the desktop analyst shell with stronger presentation, browsing flow, and multi-panel intelligence views
+- Updated docs and install guidance so desktop and CLI usage are first-class product surfaces
+- Bumped package and runtime metadata to `1.1.0`
+
 ## 1.0.1
 
 - Rebuilt the desktop shell into a multi-panel facility intelligence workspace with browsing, evidence, sources, history, and public-record views
