@@ -1,10 +1,14 @@
 {
   "name": "@aquastat/sdk",
   "version": "1.0.1",
+  "description": "JavaScript SDK for AquaStat water-aware infrastructure APIs.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -15,5 +19,24 @@
   "scripts": {
     "build": "node ./scripts/build.mjs"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magnexis/aquastat.git"
+  },
+  "homepage": "https://aquastat-api.onrender.com/docs",
+  "bugs": {
+    "url": "https://github.com/magnexis/aquastat/issues"
+  },
+  "keywords": [
+    "aquastat",
+    "water",
+    "api",
+    "sdk",
+    "infrastructure",
+    "sustainability"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

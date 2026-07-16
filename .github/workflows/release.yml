@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   build-release-assets:
@@ -38,11 +39,13 @@ jobs:
 
       - name: Build Python SDK
         working-directory: sdk
-        run: python -m build
+        run: |
+          rm -rf dist
+          python -m build
 
       - name: Build JavaScript SDK
         working-directory: js-sdk
-        run: npm install && npm run build
+        run: npm ci && npm run build
 
       - name: Build desktop bundle
         working-directory: desktop
@@ -76,3 +79,65 @@ jobs:
           files: |
             openapi/openapi.json
             openapi/openapi.yaml
+
+  publish-pypi:
+    if: startsWith(github.ref, 'refs/tags/v') && secrets.PYPI_API_TOKEN != ''
+    needs: build-release-assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install build tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build Python SDK
+        working-directory: sdk
+        run: |
+          rm -rf dist
+          python -m build
+
+      - name: Check Python distribution
+        run: python -m twine check sdk/dist/*
+
+      - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: python -m twine upload sdk/dist/*
+
+  publish-npm:
+    if: startsWith(github.ref, 'refs/tags/v') && secrets.NPM_TOKEN != ''
+    needs: build-release-assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+          cache-dependency-path: js-sdk/package-lock.json
+
+      - name: Install dependencies
+        working-directory: js-sdk
+        run: npm ci
+
+      - name: Build package
+        working-directory: js-sdk
+        run: npm run build
+
+      - name: Publish to npm
+        working-directory: js-sdk
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
