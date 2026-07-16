@@ -24,7 +24,7 @@ DATASET_VERSIONS = {
     "sourceRegistry": "2026.07.1",
     "gridWaterIntensity": "2026.1",
     "waterStress": "2025.2",
-    "climateProfiles": "1.1.1",
+    "climateProfiles": "1.1.2",
 }
 
 SOURCE_RELIABILITY = {
@@ -1072,7 +1072,7 @@ async def estimate_facility(facility_id: str) -> dict[str, Any]:
         "model_versions": {
             "application_version": settings.app_version,
             "model_version": "2.0.0",
-            "facility_profile_version": "1.1.1",
+            "facility_profile_version": "1.1.2",
             "dataset_versions": DATASET_VERSIONS,
         },
     }
@@ -1091,7 +1091,7 @@ async def estimate_facility_batch(facility_ids: list[str]) -> dict[str, Any]:
     return {"results": results, "model_versions": model_versions or {
         "application_version": settings.app_version,
         "model_version": "2.0.0",
-        "facility_profile_version": "1.1.1",
+        "facility_profile_version": "1.1.2",
         "dataset_versions": DATASET_VERSIONS,
     }}
 

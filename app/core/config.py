@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "AquaStat API"
     app_description: str = "Water-aware infrastructure API for estimating data center water usage and WUE."
-    app_version: str = "1.1.1"
+    app_version: str = "1.1.2"
     environment: Literal["development", "test", "production"] = "development"
     port: int = 8080
     host: str = "0.0.0.0"

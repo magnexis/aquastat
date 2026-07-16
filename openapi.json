@@ -3,7 +3,7 @@
   "info": {
     "title": "AquaStat API",
     "description": "Water-aware infrastructure API for estimating data center water usage and WUE.",
-    "version": "1.1.1"
+    "version": "1.1.2"
   },
   "paths": {
     "/metrics": {

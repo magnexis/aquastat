@@ -40,8 +40,10 @@ from app.metrics import record_cache_result
 
 try:
     from redis.asyncio import Redis
+    from redis.exceptions import RedisError
 except Exception:  # pragma: no cover
     Redis = None
+    RedisError = Exception
 
 RedisClient = Any
 
@@ -104,6 +106,16 @@ class StateStore:
         self._rl_sha: str | None = None
         self._local_buckets: dict[str, tuple[float, float]] = {}
 
+    async def _disable_redis(self) -> None:
+        redis_client = self._redis
+        self._redis = None
+        self._rl_sha = None
+        if redis_client is not None:
+            try:
+                await redis_client.aclose()
+            except Exception:
+                pass
+
     async def _get_redis(self) -> RedisClient | None:
         if not settings.redis_enabled or Redis is None:
             return None
@@ -124,7 +136,12 @@ class StateStore:
             record_cache_result("telemetry", False)
             return None
 
-        payload = await redis_client.get(f"telemetry:{region_key}")
+        try:
+            payload = await redis_client.get(f"telemetry:{region_key}")
+        except RedisError:
+            await self._disable_redis()
+            record_cache_result("telemetry", False)
+            return None
         if payload is None:
             record_cache_result("telemetry", False)
             return None
@@ -138,11 +155,14 @@ class StateStore:
         self._cache[snapshot.region_key] = snapshot
         redis_client = await self._get_redis()
         if redis_client is not None:
-            await redis_client.setex(
-                f"telemetry:{snapshot.region_key}",
-                settings.state_cache_ttl_seconds,
-                json.dumps(asdict(snapshot)),
-            )
+            try:
+                await redis_client.setex(
+                    f"telemetry:{snapshot.region_key}",
+                    settings.state_cache_ttl_seconds,
+                    json.dumps(asdict(snapshot)),
+                )
+            except RedisError:
+                await self._disable_redis()
 
     async def list_cached_snapshots(self, region_keys: Iterable[str]) -> list[TelemetrySnapshot]:
         snapshots: list[TelemetrySnapshot] = []
@@ -154,7 +174,11 @@ class StateStore:
 
     async def _load_rate_limit_script(self, redis_client: RedisClient) -> str:
         if self._rl_sha is None:
-            self._rl_sha = await redis_client.script_load(RATE_LIMIT_LUA)
+            try:
+                self._rl_sha = await redis_client.script_load(RATE_LIMIT_LUA)
+            except RedisError:
+                await self._disable_redis()
+                raise
         return self._rl_sha
 
     async def evaluate_rate_limit(self, subject: str, limit: int, window_seconds: int) -> RateLimitDecision:
@@ -164,29 +188,32 @@ class StateStore:
         redis_client = await self._get_redis()
 
         if redis_client is not None:
-            sha = await self._load_rate_limit_script(redis_client)
-            key = f"ratelimit:{subject}"
             try:
-                allowed, remaining = await redis_client.evalsha(
-                    sha,
-                    1,
-                    key,
-                    now,
-                    limit,
-                    refill_per_second,
-                    window_seconds,
-                )
-            except Exception:
-                allowed, remaining = await redis_client.eval(
-                    RATE_LIMIT_LUA,
-                    1,
-                    key,
-                    now,
-                    limit,
-                    refill_per_second,
-                    window_seconds,
-                )
-            return RateLimitDecision(bool(int(allowed)), int(float(remaining)), limit, reset_epoch)
+                sha = await self._load_rate_limit_script(redis_client)
+                key = f"ratelimit:{subject}"
+                try:
+                    allowed, remaining = await redis_client.evalsha(
+                        sha,
+                        1,
+                        key,
+                        now,
+                        limit,
+                        refill_per_second,
+                        window_seconds,
+                    )
+                except RedisError:
+                    allowed, remaining = await redis_client.eval(
+                        RATE_LIMIT_LUA,
+                        1,
+                        key,
+                        now,
+                        limit,
+                        refill_per_second,
+                        window_seconds,
+                    )
+                return RateLimitDecision(bool(int(allowed)), int(float(remaining)), limit, reset_epoch)
+            except RedisError:
+                await self._disable_redis()
 
         return self._evaluate_rate_limit_local(subject, limit, window_seconds)
 

@@ -1,6 +1,6 @@
 [project]
 name = "aquastat-api"
-version = "1.1.1"
+version = "1.1.2"
 description = "AquaStat REST API for estimating data center water usage and WUE"
 readme = "README.md"
 requires-python = ">=3.11"

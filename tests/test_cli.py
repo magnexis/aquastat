@@ -6,7 +6,7 @@ def _fake_request_json(_ctx, method: str, path: str, *, params=None, json_body=N
     if method == "GET" and path == "/api/v1/status":
         return {
             "name": "AquaStat API",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "documentation": "/docs",
             "openapi": "/openapi.json",
             "health": "/health",

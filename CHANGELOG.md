@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2
+
+- Fixed a production Redis outage path so rate limiting and telemetry caching now fall back cleanly to in-process storage instead of failing requests
+- Added an API regression test covering Redis-enabled but unreachable deployments
+- Synchronized package, SDK, desktop, CLI, OpenAPI, and artifact metadata to `1.1.2`
+
 ## 1.1.1
 
 - Added production-ready Square billing configuration docs, env examples, and a verifier script for live credential checks

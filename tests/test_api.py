@@ -1,8 +1,10 @@
 from fastapi.testclient import TestClient
+from redis.exceptions import ConnectionError as RedisConnectionError
 
 from app.main import app
 from app.security import generate_api_key
 from app.core.config import settings
+from app.services.state_store import state_store
 
 
 client = TestClient(app)
@@ -129,6 +131,35 @@ def test_request_id_header_is_returned() -> None:
     response = client.get("/api/v1/regions", headers={"X-Request-ID": "test-request-1234"})
     assert response.status_code == 200
     assert response.headers["X-Request-ID"] == "test-request-1234"
+
+
+def test_rate_limit_falls_back_when_redis_is_unavailable(monkeypatch) -> None:
+    class BrokenRedis:
+        async def script_load(self, _: str) -> str:
+            raise RedisConnectionError("redis offline")
+
+        async def aclose(self) -> None:
+            return None
+
+    async def fake_get_redis():
+        return BrokenRedis()
+
+    original_enabled = settings.redis_enabled
+    original_redis = state_store._redis
+    original_sha = state_store._rl_sha
+    monkeypatch.setattr(state_store, "_get_redis", fake_get_redis)
+    settings.redis_enabled = True
+    state_store._redis = BrokenRedis()
+    state_store._rl_sha = None
+    try:
+        response = client.get("/api/v1/regions")
+    finally:
+        settings.redis_enabled = original_enabled
+        state_store._redis = original_redis
+        state_store._rl_sha = original_sha
+
+    assert response.status_code == 200
+    assert response.headers["X-RateLimit-Limit"] == "60"
 
 
 def test_unknown_route_uses_standard_error_shape() -> None:
