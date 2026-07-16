@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AquaStat Candidate Fact",
+  "type": "object",
+  "required": ["id", "entityType", "entityId", "field", "rawValue", "normalizedValue", "sourceId", "status"],
+  "properties": {
+    "id": { "type": "string" },
+    "entityType": { "type": "string" },
+    "entityId": { "type": "string" },
+    "field": { "type": "string" },
+    "rawValue": { "type": "string" },
+    "normalizedValue": { "type": "string" },
+    "unit": { "type": ["string", "null"] },
+    "sourceId": { "type": "string" },
+    "sourceLocation": { "type": ["string", "null"] },
+    "extractionMethod": { "type": "string" },
+    "extractorVersion": { "type": ["string", "null"] },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "status": { "type": "string" },
+    "reviewerId": { "type": ["string", "null"] },
+    "reviewNotes": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

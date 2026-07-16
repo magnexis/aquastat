@@ -1,0 +1,9 @@
+{
+  "facility_id": "fac_syn_ashburn",
+  "alternatives": [
+    { "value_mw": 80, "source_id": "src_old" },
+    { "value_mw": 96, "source_id": "src_syn_plan_ashburn" },
+    { "value_mw": 120, "source_id": "src_planned_buildout" }
+  ],
+  "selected_value_mw": 96
+}

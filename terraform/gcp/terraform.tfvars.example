@@ -1,0 +1,9 @@
+project_id                = "my-gcp-project"
+region                    = "us-central1"
+api_image                 = "ghcr.io/example/aquastat-api:latest"
+db_username               = "aquastat_admin"
+db_password               = "replace-me"
+electricity_maps_api_key  = "replace-me"
+min_instances             = 1
+max_instances             = 5
+deletion_protection       = false

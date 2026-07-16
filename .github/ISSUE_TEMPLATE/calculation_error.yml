@@ -1,0 +1,30 @@
+name: Calculation error
+description: Report a suspected modeling, thermodynamic, or water-accounting error.
+title: "[Calculation] "
+labels:
+  - bug
+  - scientific-review
+body:
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint or workflow
+      description: Example: `/api/v1/estimate`
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed output
+      description: Include units, timestamps, and any confidence or evidence metadata shown.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Why this appears incorrect
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting evidence
+      description: Link papers, public records, provider docs, or calculations that support the correction.

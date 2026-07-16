@@ -1,0 +1,4296 @@
+openapi: 3.1.0
+info:
+  title: AquaStat API
+  description: Water-aware infrastructure API for estimating data center water usage
+    and WUE.
+  version: 1.0.0
+paths:
+  /metrics:
+    get:
+      summary: Metrics
+      operationId: metrics_metrics_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/status:
+    get:
+      tags:
+      - meta
+      summary: Get Status
+      operationId: get_status_api_v1_status_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/info:
+    get:
+      tags:
+      - meta
+      summary: Get Info
+      operationId: get_info_api_v1_info_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIInfoResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/health:
+    get:
+      tags:
+      - meta
+      summary: Get Health
+      operationId: get_health_api_v1_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/regions:
+    get:
+      summary: Get Regions
+      operationId: get_regions_api_v1_regions_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DataCenterSummary'
+                type: array
+                title: Response Get Regions Api V1 Regions Get
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/estimate:
+    get:
+      summary: Get Estimate
+      operationId: get_estimate_api_v1_estimate_get
+      parameters:
+      - name: provider
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          title: Provider
+      - name: region
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          title: Region
+      - name: load_mw
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: number
+            exclusiveMinimum: 0
+          - type: 'null'
+          title: Load Mw
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstimateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities:
+    get:
+      tags:
+      - facilities
+      summary: Get Facilities
+      operationId: get_facilities_api_v1_facilities_get
+      parameters:
+      - name: query
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Query
+      - name: operator
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operator
+      - name: country
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Country
+      - name: state
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+      - name: facility_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Facility Type
+      - name: operational_status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Operational Status
+      - name: cursor
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Cursor
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 50
+          minimum: 1
+          default: 20
+          title: Limit
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/{facility_id}:
+    get:
+      tags:
+      - facilities
+      summary: Get Facility
+      operationId: get_facility_api_v1_facilities__facility_id__get
+      parameters:
+      - name: facility_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Facility Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityDetailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/slug/{slug}:
+    get:
+      tags:
+      - facilities
+      summary: Get Facility By Slug Route
+      operationId: get_facility_by_slug_route_api_v1_facilities_slug__slug__get
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Slug
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityDetailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/{facility_id}/evidence:
+    get:
+      tags:
+      - facilities
+      summary: Get Facility Evidence Route
+      operationId: get_facility_evidence_route_api_v1_facilities__facility_id__evidence_get
+      parameters:
+      - name: facility_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Facility Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityEvidenceResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/{facility_id}/sources:
+    get:
+      tags:
+      - facilities
+      summary: Get Facility Sources Route
+      operationId: get_facility_sources_route_api_v1_facilities__facility_id__sources_get
+      parameters:
+      - name: facility_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Facility Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilitySourcesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/{facility_id}/public-records/templates:
+    get:
+      tags:
+      - facilities
+      summary: Get Public Record Templates Route
+      operationId: get_public_record_templates_route_api_v1_facilities__facility_id__public_records_templates_get
+      parameters:
+      - name: facility_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Facility Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicRecordTemplateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/{facility_id}/history:
+    get:
+      tags:
+      - facilities
+      summary: Get Facility History Route
+      operationId: get_facility_history_route_api_v1_facilities__facility_id__history_get
+      parameters:
+      - name: facility_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Facility Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityChangesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/{facility_id}/changes:
+    get:
+      tags:
+      - facilities
+      summary: Get Facility Changes Route
+      operationId: get_facility_changes_route_api_v1_facilities__facility_id__changes_get
+      parameters:
+      - name: facility_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Facility Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityChangesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/{facility_id}/estimate:
+    post:
+      tags:
+      - facilities
+      summary: Estimate Facility Route
+      operationId: estimate_facility_route_api_v1_facilities__facility_id__estimate_post
+      parameters:
+      - name: facility_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Facility Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityEstimateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/estimate-batch:
+    post:
+      tags:
+      - facilities
+      summary: Estimate Facility Batch Route
+      operationId: estimate_facility_batch_route_api_v1_facilities_estimate_batch_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchEstimateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchEstimateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/compare:
+    post:
+      tags:
+      - facilities
+      summary: Compare Facilities Route
+      operationId: compare_facilities_route_api_v1_facilities_compare_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FacilityCompareRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityCompareResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/{facility_id}/export.json:
+    get:
+      tags:
+      - exports
+      summary: Export Facility Json Route
+      operationId: export_facility_json_route_api_v1_facilities__facility_id__export_json_get
+      parameters:
+      - name: facility_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Facility Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/facilities/export:
+    post:
+      tags:
+      - exports
+      summary: Export Facilities Route
+      operationId: export_facilities_route_api_v1_facilities_export_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/organizations:
+    get:
+      tags:
+      - organizations
+      summary: Get Organizations
+      operationId: get_organizations_api_v1_organizations_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/organizations/{organization_id}:
+    get:
+      tags:
+      - organizations
+      summary: Get Organization Route
+      operationId: get_organization_route_api_v1_organizations__organization_id__get
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organization Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDetailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/organizations/{organization_id}/facilities:
+    get:
+      tags:
+      - organizations
+      summary: Get Organization Facilities Route
+      operationId: get_organization_facilities_route_api_v1_organizations__organization_id__facilities_get
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organization Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/sources/connectors:
+    get:
+      tags:
+      - sources
+      summary: List Source Connectors Route
+      operationId: list_source_connectors_route_api_v1_sources_connectors_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceConnectorListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/sources/{source_id}:
+    get:
+      tags:
+      - sources
+      summary: Get Source Route
+      operationId: get_source_route_api_v1_sources__source_id__get
+      parameters:
+      - name: source_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Source Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceRecordResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/corrections:
+    post:
+      tags:
+      - corrections
+      summary: Create Correction Route
+      operationId: create_correction_route_api_v1_corrections_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CorrectionRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CorrectionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/ingestion/jobs:
+    post:
+      tags:
+      - ingestion
+      summary: Create Ingestion Job Route
+      operationId: create_ingestion_job_route_api_v1_ingestion_jobs_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IngestionJobRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestionJobResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/ingestion/jobs/{job_id}:
+    get:
+      tags:
+      - ingestion
+      summary: Get Ingestion Job Route
+      operationId: get_ingestion_job_route_api_v1_ingestion_jobs__job_id__get
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Job Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestionJobResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/ingestion/jobs/{job_id}/cancel:
+    post:
+      tags:
+      - ingestion
+      summary: Cancel Ingestion Job Route
+      operationId: cancel_ingestion_job_route_api_v1_ingestion_jobs__job_id__cancel_post
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Job Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestionJobResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/admin/review:
+    get:
+      tags:
+      - admin
+      summary: Get Review Queue
+      operationId: get_review_queue_api_v1_admin_review_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/admin/review/{candidate_id}:
+    get:
+      tags:
+      - admin
+      summary: Get Review Item Route
+      operationId: get_review_item_route_api_v1_admin_review__candidate_id__get
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Candidate Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Review Item Route Api V1 Admin Review  Candidate
+                  Id  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/admin/review/{candidate_id}/approve:
+    post:
+      tags:
+      - admin
+      summary: Approve Review Item
+      operationId: approve_review_item_api_v1_admin_review__candidate_id__approve_post
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Candidate Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewDecisionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/admin/review/{candidate_id}/reject:
+    post:
+      tags:
+      - admin
+      summary: Reject Review Item
+      operationId: reject_review_item_api_v1_admin_review__candidate_id__reject_post
+      parameters:
+      - name: candidate_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Candidate Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewDecisionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/benchmark:
+    get:
+      tags:
+      - analytics
+      summary: Get Benchmark V1
+      operationId: get_benchmark_v1_api_v1_benchmark_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/stress-map:
+    get:
+      tags:
+      - analytics
+      summary: Get Stress Map V1
+      operationId: get_stress_map_v1_api_v1_stress_map_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StressMapResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/route-workload:
+    post:
+      tags:
+      - analytics
+      summary: Route Workload V1
+      operationId: route_workload_v1_api_v1_route_workload_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouteWorkloadRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteWorkloadResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/footprint:
+    post:
+      tags:
+      - analytics
+      summary: Upload Footprint Csv V1
+      operationId: upload_footprint_csv_v1_api_v1_footprint_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_footprint_csv_v1_api_v1_footprint_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FootprintResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/footprint-calculator:
+    get:
+      tags:
+      - analytics
+      summary: Footprint Calculator Ui V1
+      operationId: footprint_calculator_ui_v1_api_v1_footprint_calculator_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v2/estimate:
+    get:
+      summary: Get Estimate V2
+      operationId: get_estimate_v2_api_v2_estimate_get
+      parameters:
+      - name: provider
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          title: Provider
+      - name: region
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          title: Region
+      - name: load_mw
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: number
+            exclusiveMinimum: 0
+          - type: 'null'
+          title: Load Mw
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstimateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v2/stress-map:
+    get:
+      summary: Get Stress Map
+      operationId: get_stress_map_api_v2_stress_map_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StressMapResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v2/route-workload:
+    post:
+      summary: Route Workload
+      operationId: route_workload_api_v2_route_workload_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouteWorkloadRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteWorkloadResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v2/benchmark:
+    get:
+      summary: Get Benchmark
+      operationId: get_benchmark_api_v2_benchmark_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v2/footprint:
+    post:
+      summary: Upload Footprint Csv
+      operationId: upload_footprint_csv_api_v2_footprint_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_footprint_csv_api_v2_footprint_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FootprintResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v2/footprint-calculator:
+    get:
+      summary: Footprint Calculator Ui
+      operationId: footprint_calculator_ui_api_v2_footprint_calculator_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /health/live:
+    get:
+      tags:
+      - meta
+      summary: Get Liveness
+      operationId: get_liveness_health_live_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthReadyResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /health/ready:
+    get:
+      tags:
+      - meta
+      summary: Get Readiness
+      operationId: get_readiness_health_ready_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthReadyResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /version:
+    get:
+      tags:
+      - meta
+      summary: Get Version
+      operationId: get_version_version_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/control-center/overview:
+    get:
+      tags:
+      - control-center
+      summary: Get Control Center Overview
+      operationId: get_control_center_overview_api_v1_control_center_overview_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ControlCenterOverviewResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/control-center/requests:
+    get:
+      tags:
+      - control-center
+      summary: Get Request Log
+      operationId: get_request_log_api_v1_control_center_requests_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestLogResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/control-center/models:
+    get:
+      tags:
+      - control-center
+      summary: Get Models
+      operationId: get_models_api_v1_control_center_models_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelRegistryResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/control-center/api-keys:
+    get:
+      tags:
+      - control-center
+      summary: List Managed Keys
+      operationId: list_managed_keys_api_v1_control_center_api_keys_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedApiKeyListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+    post:
+      tags:
+      - control-center
+      summary: Create Managed Key
+      operationId: create_managed_key_api_v1_control_center_api_keys_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagedApiKeyCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedApiKeyCreateResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/control-center/api-keys/{key_id}/revoke:
+    post:
+      tags:
+      - control-center
+      summary: Revoke Managed Key
+      operationId: revoke_managed_key_api_v1_control_center_api_keys__key_id__revoke_post
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Key Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedApiKeyActionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/control-center/api-keys/{key_id}/disable:
+    post:
+      tags:
+      - control-center
+      summary: Disable Managed Key
+      operationId: disable_managed_key_api_v1_control_center_api_keys__key_id__disable_post
+      parameters:
+      - name: key_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Key Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedApiKeyActionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api/v1/control-center/audit-logs:
+    get:
+      tags:
+      - control-center
+      summary: Get Audit Logs
+      operationId: get_audit_logs_api_v1_control_center_audit_logs_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditEventListResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /documentation:
+    get:
+      tags:
+      - control-center
+      summary: Control Center Shell
+      operationId: control_center_shell_documentation_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /requests:
+    get:
+      tags:
+      - control-center
+      summary: Control Center Shell
+      operationId: control_center_shell_requests_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /api-keys:
+    get:
+      tags:
+      - control-center
+      summary: Control Center Shell
+      operationId: control_center_shell_api_keys_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /facilities:
+    get:
+      tags:
+      - control-center
+      summary: Control Center Shell
+      operationId: control_center_shell_facilities_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /calculate:
+    get:
+      tags:
+      - control-center
+      summary: Control Center Shell
+      operationId: control_center_shell_calculate_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /overview:
+    get:
+      tags:
+      - control-center
+      summary: Control Center Shell
+      operationId: control_center_shell_overview_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /control-center:
+    get:
+      tags:
+      - control-center
+      summary: Control Center Shell
+      operationId: control_center_shell_control_center_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            text/html:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+  /health:
+    get:
+      tags:
+      - meta
+      summary: Get Health
+      operationId: get_health_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    APIInfoResponse:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          title: Description
+        version:
+          type: string
+          title: Version
+        documentation:
+          type: string
+          title: Documentation
+        openapi:
+          type: string
+          title: Openapi
+        health:
+          type: string
+          title: Health
+      type: object
+      required:
+      - name
+      - description
+      - version
+      - documentation
+      - openapi
+      - health
+      title: APIInfoResponse
+    AssumptionEntry:
+      properties:
+        field:
+          type: string
+          title: Field
+        value:
+          anyOf:
+          - type: string
+          - type: number
+          - type: integer
+          - type: boolean
+          - type: 'null'
+          title: Value
+        unit:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unit
+        status:
+          type: string
+          title: Status
+        reason:
+          type: string
+          title: Reason
+        source_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Id
+      type: object
+      required:
+      - field
+      - value
+      - status
+      - reason
+      title: AssumptionEntry
+    AuditEventListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/AuditEventResponse'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: AuditEventListResponse
+    AuditEventResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        actor:
+          type: string
+          title: Actor
+        action:
+          type: string
+          title: Action
+        target:
+          type: string
+          title: Target
+        result:
+          type: string
+          title: Result
+        request_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Request Id
+        client_ip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Ip
+        metadata_json:
+          additionalProperties: true
+          type: object
+          title: Metadata Json
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+      type: object
+      required:
+      - id
+      - actor
+      - action
+      - target
+      - result
+      - metadata_json
+      - created_at
+      title: AuditEventResponse
+    BatchEstimateItem:
+      properties:
+        facility_id:
+          type: string
+          title: Facility Id
+        status:
+          type: string
+          title: Status
+        estimate:
+          anyOf:
+          - $ref: '#/components/schemas/FacilityEstimateResponse'
+          - type: 'null'
+        error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error
+      type: object
+      required:
+      - facility_id
+      - status
+      title: BatchEstimateItem
+    BatchEstimateRequest:
+      properties:
+        facility_ids:
+          items:
+            type: string
+          type: array
+          maxItems: 10
+          minItems: 1
+          title: Facility Ids
+      type: object
+      required:
+      - facility_ids
+      title: BatchEstimateRequest
+    BatchEstimateResponse:
+      properties:
+        results:
+          items:
+            $ref: '#/components/schemas/BatchEstimateItem'
+          type: array
+          title: Results
+        model_versions:
+          $ref: '#/components/schemas/ModelVersions'
+      type: object
+      required:
+      - results
+      - model_versions
+      title: BatchEstimateResponse
+    BenchmarkEntry:
+      properties:
+        region:
+          type: string
+          title: Region
+        provider:
+          type: string
+          title: Provider
+        pue:
+          type: number
+          title: Pue
+        instant_wue:
+          type: number
+          title: Instant Wue
+        stress_adjusted_wue:
+          type: number
+          title: Stress Adjusted Wue
+        true_green_index:
+          type: number
+          title: True Green Index
+        carbon_intensity_g_per_kwh:
+          type: number
+          title: Carbon Intensity G Per Kwh
+        weighted_impact_score:
+          type: number
+          title: Weighted Impact Score
+        water_stress_tier:
+          type: string
+          title: Water Stress Tier
+      type: object
+      required:
+      - region
+      - provider
+      - pue
+      - instant_wue
+      - stress_adjusted_wue
+      - true_green_index
+      - carbon_intensity_g_per_kwh
+      - weighted_impact_score
+      - water_stress_tier
+      title: BenchmarkEntry
+    BenchmarkResponse:
+      properties:
+        generated_at:
+          type: string
+          format: date-time
+          title: Generated At
+        rankings:
+          items:
+            $ref: '#/components/schemas/BenchmarkEntry'
+          type: array
+          title: Rankings
+      type: object
+      required:
+      - generated_at
+      - rankings
+      title: BenchmarkResponse
+    Body_upload_footprint_csv_api_v2_footprint_post:
+      properties:
+        file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: File
+      type: object
+      required:
+      - file
+      title: Body_upload_footprint_csv_api_v2_footprint_post
+    Body_upload_footprint_csv_v1_api_v1_footprint_post:
+      properties:
+        file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: File
+      type: object
+      required:
+      - file
+      title: Body_upload_footprint_csv_v1_api_v1_footprint_post
+    CandidateFactResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        entity_type:
+          type: string
+          title: Entity Type
+        entity_id:
+          type: string
+          title: Entity Id
+        field:
+          type: string
+          title: Field
+        raw_value:
+          type: string
+          title: Raw Value
+        normalized_value:
+          type: string
+          title: Normalized Value
+        unit:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unit
+        source_id:
+          type: string
+          title: Source Id
+        extraction_method:
+          type: string
+          title: Extraction Method
+        confidence:
+          type: number
+          title: Confidence
+        status:
+          type: string
+          title: Status
+        review_notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Review Notes
+      type: object
+      required:
+      - id
+      - entity_type
+      - entity_id
+      - field
+      - raw_value
+      - normalized_value
+      - source_id
+      - extraction_method
+      - confidence
+      - status
+      title: CandidateFactResponse
+    ControlCenterOverviewResponse:
+      properties:
+        generated_at:
+          type: string
+          format: date-time
+          title: Generated At
+        model_version:
+          type: string
+          title: Model Version
+        request_window:
+          type: string
+          title: Request Window
+        metrics:
+          items:
+            $ref: '#/components/schemas/OverviewMetric'
+          type: array
+          title: Metrics
+        endpoint_usage:
+          items:
+            $ref: '#/components/schemas/OverviewChartPoint'
+          type: array
+          title: Endpoint Usage
+        facility_usage:
+          items:
+            $ref: '#/components/schemas/OverviewChartPoint'
+          type: array
+          title: Facility Usage
+        region_usage:
+          items:
+            $ref: '#/components/schemas/OverviewChartPoint'
+          type: array
+          title: Region Usage
+        cooling_usage:
+          items:
+            $ref: '#/components/schemas/OverviewChartPoint'
+          type: array
+          title: Cooling Usage
+        confidence_distribution:
+          items:
+            $ref: '#/components/schemas/OverviewChartPoint'
+          type: array
+          title: Confidence Distribution
+        recent_alerts:
+          items:
+            type: string
+          type: array
+          title: Recent Alerts
+        recent_calculations:
+          items:
+            additionalProperties:
+              anyOf:
+              - type: string
+              - type: integer
+              - type: number
+            type: object
+          type: array
+          title: Recent Calculations
+      type: object
+      required:
+      - generated_at
+      - model_version
+      - request_window
+      - metrics
+      - endpoint_usage
+      - facility_usage
+      - region_usage
+      - cooling_usage
+      - confidence_distribution
+      - recent_alerts
+      - recent_calculations
+      title: ControlCenterOverviewResponse
+    CoolingType:
+      type: string
+      enum:
+      - DIRECT_EVAPORATIVE
+      - CLOSED_LOOP
+      - ADIABATIC_HYBRID
+      title: CoolingType
+    CorrectionRequest:
+      properties:
+        facility_id:
+          type: string
+          title: Facility Id
+        field:
+          type: string
+          title: Field
+        proposed_value:
+          type: string
+          title: Proposed Value
+        source_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          title: Source Url
+        notes:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Notes
+        contact_email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Contact Email
+      type: object
+      required:
+      - facility_id
+      - field
+      - proposed_value
+      - source_url
+      title: CorrectionRequest
+    CorrectionResponse:
+      properties:
+        correction_id:
+          type: string
+          title: Correction Id
+        status:
+          type: string
+          title: Status
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - correction_id
+      - status
+      - message
+      title: CorrectionResponse
+    DataCenterSummary:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        provider:
+          type: string
+          title: Provider
+        region_slug:
+          type: string
+          title: Region Slug
+        latitude:
+          type: number
+          title: Latitude
+        longitude:
+          type: number
+          title: Longitude
+        max_it_capacity_mw:
+          type: number
+          title: Max It Capacity Mw
+        pue:
+          type: number
+          title: Pue
+        cooling_type:
+          $ref: '#/components/schemas/CoolingType'
+        base_wue:
+          type: number
+          title: Base Wue
+        grid_zone_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Grid Zone Id
+        water_stress_score:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Water Stress Score
+        ping_target_ip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ping Target Ip
+      type: object
+      required:
+      - id
+      - name
+      - provider
+      - region_slug
+      - latitude
+      - longitude
+      - max_it_capacity_mw
+      - pue
+      - cooling_type
+      - base_wue
+      title: DataCenterSummary
+    DataQualitySummary:
+      properties:
+        score:
+          type: integer
+          title: Score
+        label:
+          type: string
+          title: Label
+        reasons:
+          items:
+            type: string
+          type: array
+          title: Reasons
+      type: object
+      required:
+      - score
+      - label
+      - reasons
+      title: DataQualitySummary
+    EstimateConfidence:
+      properties:
+        score:
+          type: integer
+          title: Score
+        label:
+          type: string
+          title: Label
+        reasons:
+          items:
+            type: string
+          type: array
+          title: Reasons
+      type: object
+      required:
+      - score
+      - label
+      - reasons
+      title: EstimateConfidence
+    EstimateDataCenter:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        provider:
+          type: string
+          title: Provider
+        region_slug:
+          type: string
+          title: Region Slug
+        cooling_type:
+          $ref: '#/components/schemas/CoolingType'
+      type: object
+      required:
+      - id
+      - provider
+      - region_slug
+      - cooling_type
+      title: EstimateDataCenter
+    EstimateInputSelection:
+      properties:
+        field:
+          type: string
+          title: Field
+        selected_value:
+          anyOf:
+          - type: string
+          - type: number
+          - type: integer
+          - type: boolean
+          - type: 'null'
+          title: Selected Value
+        status:
+          type: string
+          title: Status
+        source_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Id
+        alternatives:
+          items:
+            type: string
+          type: array
+          title: Alternatives
+      type: object
+      required:
+      - field
+      - selected_value
+      - status
+      title: EstimateInputSelection
+    EstimateRange:
+      properties:
+        low_liters_per_hour:
+          type: number
+          title: Low Liters Per Hour
+        expected_liters_per_hour:
+          type: number
+          title: Expected Liters Per Hour
+        high_liters_per_hour:
+          type: number
+          title: High Liters Per Hour
+      type: object
+      required:
+      - low_liters_per_hour
+      - expected_liters_per_hour
+      - high_liters_per_hour
+      title: EstimateRange
+    EstimateResponse:
+      properties:
+        datacenter:
+          $ref: '#/components/schemas/EstimateDataCenter'
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+        weather_snapshot:
+          $ref: '#/components/schemas/WeatherSnapshot'
+        water_metrics:
+          $ref: '#/components/schemas/WaterMetrics'
+      type: object
+      required:
+      - datacenter
+      - timestamp
+      - weather_snapshot
+      - water_metrics
+      title: EstimateResponse
+    ExportRecord:
+      properties:
+        facility:
+          $ref: '#/components/schemas/FacilityDetailResponse'
+        estimate:
+          $ref: '#/components/schemas/FacilityEstimateResponse'
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+        retrieved_at:
+          type: string
+          format: date-time
+          title: Retrieved At
+      type: object
+      required:
+      - facility
+      - estimate
+      - warnings
+      - retrieved_at
+      title: ExportRecord
+    ExportRequest:
+      properties:
+        facility_ids:
+          items:
+            type: string
+          type: array
+          maxItems: 10
+          minItems: 1
+          title: Facility Ids
+        include_evidence:
+          type: boolean
+          title: Include Evidence
+          default: true
+      type: object
+      required:
+      - facility_ids
+      title: ExportRequest
+    ExportResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ExportRecord'
+          type: array
+          title: Items
+      type: object
+      required:
+      - items
+      title: ExportResponse
+    FacilityChangesResponse:
+      properties:
+        facility_id:
+          type: string
+          title: Facility Id
+        changes:
+          items:
+            $ref: '#/components/schemas/FacilityHistoryEntry'
+          type: array
+          title: Changes
+      type: object
+      required:
+      - facility_id
+      - changes
+      title: FacilityChangesResponse
+    FacilityCompareRequest:
+      properties:
+        facility_ids:
+          items:
+            type: string
+          type: array
+          maxItems: 5
+          minItems: 2
+          title: Facility Ids
+      type: object
+      required:
+      - facility_ids
+      title: FacilityCompareRequest
+    FacilityCompareResponse:
+      properties:
+        rankings:
+          items:
+            $ref: '#/components/schemas/FacilityComparisonEntry'
+          type: array
+          title: Rankings
+        explanation:
+          type: string
+          title: Explanation
+      type: object
+      required:
+      - rankings
+      - explanation
+      title: FacilityCompareResponse
+    FacilityComparisonEntry:
+      properties:
+        facility_id:
+          type: string
+          title: Facility Id
+        facility_name:
+          type: string
+          title: Facility Name
+        direct_water_lph:
+          type: number
+          title: Direct Water Lph
+        indirect_water_lph:
+          type: number
+          title: Indirect Water Lph
+        total_water_lph:
+          type: number
+          title: Total Water Lph
+        data_quality_score:
+          type: integer
+          title: Data Quality Score
+        estimate_confidence_score:
+          type: integer
+          title: Estimate Confidence Score
+        cooling_systems:
+          items:
+            type: string
+          type: array
+          title: Cooling Systems
+        water_stress_category:
+          type: string
+          title: Water Stress Category
+      type: object
+      required:
+      - facility_id
+      - facility_name
+      - direct_water_lph
+      - indirect_water_lph
+      - total_water_lph
+      - data_quality_score
+      - estimate_confidence_score
+      - cooling_systems
+      - water_stress_category
+      title: FacilityComparisonEntry
+    FacilityCoverage:
+      properties:
+        location:
+          type: string
+          title: Location
+        capacity:
+          type: string
+          title: Capacity
+        cooling_system:
+          type: string
+          title: Cooling System
+        pue:
+          type: string
+          title: Pue
+        wue:
+          type: string
+          title: Wue
+        water_use:
+          type: string
+          title: Water Use
+      type: object
+      required:
+      - location
+      - capacity
+      - cooling_system
+      - pue
+      - wue
+      - water_use
+      title: FacilityCoverage
+    FacilityDetailResponse:
+      properties:
+        facility:
+          $ref: '#/components/schemas/FacilitySummary'
+        aliases:
+          items:
+            type: string
+          type: array
+          title: Aliases
+        owner:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Owner
+        campus_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Campus Name
+        primary_water_figure:
+          anyOf:
+          - $ref: '#/components/schemas/FieldEvidence'
+          - type: 'null'
+        contradictory_claims:
+          items:
+            $ref: '#/components/schemas/FieldEvidence'
+          type: array
+          title: Contradictory Claims
+        water_sources:
+          items:
+            $ref: '#/components/schemas/WaterSourceComponent'
+          type: array
+          title: Water Sources
+        utility_providers:
+          items:
+            type: string
+          type: array
+          title: Utility Providers
+        reported_data_year:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Reported Data Year
+        confidence_score:
+          type: integer
+          title: Confidence Score
+        record_status:
+          type: string
+          title: Record Status
+        verification_notes:
+          items:
+            type: string
+          type: array
+          title: Verification Notes
+      type: object
+      required:
+      - facility
+      - aliases
+      - water_sources
+      - utility_providers
+      - confidence_score
+      - record_status
+      - verification_notes
+      title: FacilityDetailResponse
+    FacilityEstimateResponse:
+      properties:
+        facility_record:
+          $ref: '#/components/schemas/FacilitySummary'
+        primary_water_figure:
+          anyOf:
+          - $ref: '#/components/schemas/FieldEvidence'
+          - type: 'null'
+        input_selection:
+          items:
+            $ref: '#/components/schemas/EstimateInputSelection'
+          type: array
+          title: Input Selection
+        source_evidence:
+          items:
+            $ref: '#/components/schemas/FieldEvidence'
+          type: array
+          title: Source Evidence
+        direct_water:
+          $ref: '#/components/schemas/EstimateRange'
+        indirect_water:
+          $ref: '#/components/schemas/EstimateRange'
+        total_water:
+          $ref: '#/components/schemas/EstimateRange'
+        projections:
+          $ref: '#/components/schemas/ProjectionRange'
+        confidence:
+          $ref: '#/components/schemas/EstimateConfidence'
+        data_quality:
+          $ref: '#/components/schemas/DataQualitySummary'
+        assumptions:
+          items:
+            $ref: '#/components/schemas/AssumptionEntry'
+          type: array
+          title: Assumptions
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+        result_classification:
+          type: string
+          title: Result Classification
+        methodology:
+          type: string
+          title: Methodology
+        model_versions:
+          $ref: '#/components/schemas/ModelVersions'
+      type: object
+      required:
+      - facility_record
+      - input_selection
+      - source_evidence
+      - direct_water
+      - indirect_water
+      - total_water
+      - projections
+      - confidence
+      - data_quality
+      - assumptions
+      - warnings
+      - result_classification
+      - methodology
+      - model_versions
+      title: FacilityEstimateResponse
+    FacilityEvidenceResponse:
+      properties:
+        facility_id:
+          type: string
+          title: Facility Id
+        evidence:
+          items:
+            $ref: '#/components/schemas/FieldEvidence'
+          type: array
+          title: Evidence
+      type: object
+      required:
+      - facility_id
+      - evidence
+      title: FacilityEvidenceResponse
+    FacilityHistoryEntry:
+      properties:
+        changed_at:
+          type: string
+          title: Changed At
+        field:
+          type: string
+          title: Field
+        previous_value:
+          anyOf:
+          - type: string
+          - type: number
+          - type: integer
+          - type: 'null'
+          title: Previous Value
+        new_value:
+          anyOf:
+          - type: string
+          - type: number
+          - type: integer
+          - type: 'null'
+          title: New Value
+        status:
+          type: string
+          title: Status
+        source_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Id
+        summary:
+          type: string
+          title: Summary
+      type: object
+      required:
+      - changed_at
+      - field
+      - status
+      - summary
+      title: FacilityHistoryEntry
+    FacilityListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/FacilitySummary'
+          type: array
+          title: Items
+        next_cursor:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Next Cursor
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: FacilityListResponse
+    FacilitySourcesResponse:
+      properties:
+        facility_id:
+          type: string
+          title: Facility Id
+        sources:
+          items:
+            $ref: '#/components/schemas/SourceRecordResponse'
+          type: array
+          title: Sources
+      type: object
+      required:
+      - facility_id
+      - sources
+      title: FacilitySourcesResponse
+    FacilitySummary:
+      properties:
+        id:
+          type: string
+          title: Id
+        slug:
+          type: string
+          title: Slug
+        name:
+          type: string
+          title: Name
+        operator:
+          type: string
+          title: Operator
+        facility_type:
+          type: string
+          title: Facility Type
+        operational_status:
+          type: string
+          title: Operational Status
+        country:
+          type: string
+          title: Country
+        state_or_province:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State Or Province
+        municipality:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Municipality
+        latitude:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Latitude
+        longitude:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Longitude
+        estimated_it_load_mw:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Estimated It Load Mw
+        announced_it_load_mw:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Announced It Load Mw
+        cooling_systems:
+          items:
+            type: string
+          type: array
+          title: Cooling Systems
+        electricity_grid_region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Electricity Grid Region
+        verification_status:
+          type: string
+          title: Verification Status
+        synthetic:
+          type: boolean
+          title: Synthetic
+        production_eligible:
+          type: boolean
+          title: Production Eligible
+        data_quality:
+          $ref: '#/components/schemas/DataQualitySummary'
+        coverage:
+          $ref: '#/components/schemas/FacilityCoverage'
+        source_summary:
+          $ref: '#/components/schemas/SourceSummary'
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+      type: object
+      required:
+      - id
+      - slug
+      - name
+      - operator
+      - facility_type
+      - operational_status
+      - country
+      - cooling_systems
+      - verification_status
+      - synthetic
+      - production_eligible
+      - data_quality
+      - coverage
+      - source_summary
+      - warnings
+      title: FacilitySummary
+    FieldEvidence:
+      properties:
+        field:
+          type: string
+          title: Field
+        value:
+          anyOf:
+          - type: string
+          - type: number
+          - type: integer
+          - type: boolean
+          - type: 'null'
+          title: Value
+        unit:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unit
+        evidence_class:
+          type: string
+          title: Evidence Class
+        figure_type:
+          type: string
+          title: Figure Type
+        reporting_boundary:
+          type: string
+          title: Reporting Boundary
+        source_id:
+          type: string
+          title: Source Id
+        source_type:
+          type: string
+          title: Source Type
+        source_date:
+          type: string
+          title: Source Date
+        extraction_method:
+          type: string
+          title: Extraction Method
+        verification_status:
+          type: string
+          title: Verification Status
+        confidence:
+          type: number
+          title: Confidence
+        value_status:
+          type: string
+          title: Value Status
+        independent_chain_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Independent Chain Id
+        notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Notes
+      type: object
+      required:
+      - field
+      - value
+      - evidence_class
+      - figure_type
+      - reporting_boundary
+      - source_id
+      - source_type
+      - source_date
+      - extraction_method
+      - verification_status
+      - confidence
+      - value_status
+      title: FieldEvidence
+    FootprintBreakdownEntry:
+      properties:
+        line_item:
+          type: string
+          title: Line Item
+        region:
+          type: string
+          title: Region
+        estimated_mwh:
+          type: number
+          title: Estimated Mwh
+        estimated_water_liters:
+          type: number
+          title: Estimated Water Liters
+      type: object
+      required:
+      - line_item
+      - region
+      - estimated_mwh
+      - estimated_water_liters
+      title: FootprintBreakdownEntry
+    FootprintResponse:
+      properties:
+        summary:
+          $ref: '#/components/schemas/FootprintSummary'
+        breakdown:
+          items:
+            $ref: '#/components/schemas/FootprintBreakdownEntry'
+          type: array
+          title: Breakdown
+      type: object
+      required:
+      - summary
+      - breakdown
+      title: FootprintResponse
+    FootprintSummary:
+      properties:
+        provider_detected:
+          type: string
+          title: Provider Detected
+        estimated_compute_mwh:
+          type: number
+          title: Estimated Compute Mwh
+        estimated_water_liters:
+          type: number
+          title: Estimated Water Liters
+        estimated_water_gallons:
+          type: number
+          title: Estimated Water Gallons
+        olympic_pools:
+          type: number
+          title: Olympic Pools
+        recommended_region:
+          type: string
+          title: Recommended Region
+        true_green_index:
+          type: number
+          title: True Green Index
+      type: object
+      required:
+      - provider_detected
+      - estimated_compute_mwh
+      - estimated_water_liters
+      - estimated_water_gallons
+      - olympic_pools
+      - recommended_region
+      - true_green_index
+      title: FootprintSummary
+    GeoJsonFeature:
+      properties:
+        type:
+          type: string
+          title: Type
+          default: Feature
+        geometry:
+          additionalProperties: true
+          type: object
+          title: Geometry
+        properties:
+          $ref: '#/components/schemas/StressMapProperties'
+      type: object
+      required:
+      - geometry
+      - properties
+      title: GeoJsonFeature
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    HealthReadyResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        service:
+          type: string
+          title: Service
+        version:
+          type: string
+          title: Version
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+      type: object
+      required:
+      - status
+      - service
+      - version
+      - timestamp
+      title: HealthReadyResponse
+    HealthResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        service:
+          type: string
+          title: Service
+        version:
+          type: string
+          title: Version
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+      type: object
+      required:
+      - status
+      - service
+      - version
+      - timestamp
+      title: HealthResponse
+    IngestionJobRequest:
+      properties:
+        source_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          title: Source Url
+        source_type:
+          type: string
+          title: Source Type
+        dry_run:
+          type: boolean
+          title: Dry Run
+          default: true
+        notes:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Notes
+      type: object
+      required:
+      - source_url
+      - source_type
+      title: IngestionJobRequest
+    IngestionJobResponse:
+      properties:
+        job_id:
+          type: string
+          title: Job Id
+        status:
+          type: string
+          title: Status
+        source_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          title: Source Url
+        source_type:
+          type: string
+          title: Source Type
+        dry_run:
+          type: boolean
+          title: Dry Run
+        summary:
+          type: string
+          title: Summary
+        sources_processed:
+          type: integer
+          title: Sources Processed
+        candidate_facts_created:
+          type: integer
+          title: Candidate Facts Created
+        errors:
+          items:
+            type: string
+          type: array
+          title: Errors
+      type: object
+      required:
+      - job_id
+      - status
+      - source_url
+      - source_type
+      - dry_run
+      - summary
+      - sources_processed
+      - candidate_facts_created
+      - errors
+      title: IngestionJobResponse
+    ManagedApiKeyActionResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        status:
+          type: string
+          title: Status
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - id
+      - status
+      - message
+      title: ManagedApiKeyActionResponse
+    ManagedApiKeyCreateRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          title: Name
+        description:
+          anyOf:
+          - type: string
+            maxLength: 300
+          - type: 'null'
+          title: Description
+        environment:
+          type: string
+          pattern: ^(development|testing|staging|production)$
+          title: Environment
+        scopes:
+          items:
+            type: string
+          type: array
+          title: Scopes
+        allowed_endpoints:
+          items:
+            type: string
+          type: array
+          title: Allowed Endpoints
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+        allowed_origins:
+          items:
+            type: string
+          type: array
+          title: Allowed Origins
+        allowed_ips:
+          items:
+            type: string
+          type: array
+          title: Allowed Ips
+        usage_limit:
+          anyOf:
+          - type: integer
+            minimum: 1.0
+          - type: 'null'
+          title: Usage Limit
+      type: object
+      required:
+      - name
+      - environment
+      title: ManagedApiKeyCreateRequest
+    ManagedApiKeyCreateResponse:
+      properties:
+        key:
+          type: string
+          title: Key
+        record:
+          $ref: '#/components/schemas/ManagedApiKeyResponse'
+      type: object
+      required:
+      - key
+      - record
+      title: ManagedApiKeyCreateResponse
+    ManagedApiKeyListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ManagedApiKeyResponse'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: ManagedApiKeyListResponse
+    ManagedApiKeyResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        environment:
+          type: string
+          title: Environment
+        scopes:
+          items:
+            type: string
+          type: array
+          title: Scopes
+        allowed_endpoints:
+          items:
+            type: string
+          type: array
+          title: Allowed Endpoints
+        allowed_origins:
+          items:
+            type: string
+          type: array
+          title: Allowed Origins
+        allowed_ips:
+          items:
+            type: string
+          type: array
+          title: Allowed Ips
+        usage_limit:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Usage Limit
+        status:
+          type: string
+          title: Status
+        prefix:
+          type: string
+          title: Prefix
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+        last_used_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Used At
+      type: object
+      required:
+      - id
+      - name
+      - environment
+      - scopes
+      - allowed_endpoints
+      - allowed_origins
+      - allowed_ips
+      - status
+      - prefix
+      - created_at
+      title: ManagedApiKeyResponse
+    ModelRegistryEntry:
+      properties:
+        model_id:
+          type: string
+          title: Model Id
+        display_name:
+          type: string
+          title: Display Name
+        semantic_version:
+          type: string
+          title: Semantic Version
+        status:
+          type: string
+          title: Status
+        description:
+          type: string
+          title: Description
+        supported_inputs:
+          items:
+            type: string
+          type: array
+          title: Supported Inputs
+        assumptions:
+          items:
+            type: string
+          type: array
+          title: Assumptions
+        release_date:
+          type: string
+          title: Release Date
+        known_limitations:
+          items:
+            type: string
+          type: array
+          title: Known Limitations
+      type: object
+      required:
+      - model_id
+      - display_name
+      - semantic_version
+      - status
+      - description
+      - supported_inputs
+      - assumptions
+      - release_date
+      - known_limitations
+      title: ModelRegistryEntry
+    ModelRegistryResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ModelRegistryEntry'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: ModelRegistryResponse
+    ModelVersions:
+      properties:
+        application_version:
+          type: string
+          title: Application Version
+        model_version:
+          type: string
+          title: Model Version
+        facility_profile_version:
+          type: string
+          title: Facility Profile Version
+        dataset_versions:
+          additionalProperties:
+            type: string
+          type: object
+          title: Dataset Versions
+      type: object
+      required:
+      - application_version
+      - model_version
+      - facility_profile_version
+      - dataset_versions
+      title: ModelVersions
+    OrganizationDetailResponse:
+      properties:
+        organization:
+          $ref: '#/components/schemas/OrganizationSummary'
+        aliases:
+          items:
+            type: string
+          type: array
+          title: Aliases
+        relationships:
+          items:
+            additionalProperties:
+              type: string
+            type: object
+          type: array
+          title: Relationships
+        warnings:
+          items:
+            type: string
+          type: array
+          title: Warnings
+      type: object
+      required:
+      - organization
+      - aliases
+      - relationships
+      - warnings
+      title: OrganizationDetailResponse
+    OrganizationListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/OrganizationSummary'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: OrganizationListResponse
+    OrganizationSummary:
+      properties:
+        id:
+          type: string
+          title: Id
+        name:
+          type: string
+          title: Name
+        legal_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Legal Name
+        organization_type:
+          type: string
+          title: Organization Type
+        country:
+          type: string
+          title: Country
+        website:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+          title: Website
+        facility_ids:
+          items:
+            type: string
+          type: array
+          title: Facility Ids
+      type: object
+      required:
+      - id
+      - name
+      - organization_type
+      - country
+      - facility_ids
+      title: OrganizationSummary
+    OverviewChartPoint:
+      properties:
+        label:
+          type: string
+          title: Label
+        value:
+          type: number
+          title: Value
+      type: object
+      required:
+      - label
+      - value
+      title: OverviewChartPoint
+    OverviewMetric:
+      properties:
+        label:
+          type: string
+          title: Label
+        value:
+          anyOf:
+          - type: number
+          - type: integer
+          - type: string
+          title: Value
+        unit:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Unit
+        context:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Context
+      type: object
+      required:
+      - label
+      - value
+      title: OverviewMetric
+    ProjectionRange:
+      properties:
+        daily_liters:
+          type: number
+          title: Daily Liters
+        monthly_liters:
+          type: number
+          title: Monthly Liters
+        annual_liters:
+          type: number
+          title: Annual Liters
+      type: object
+      required:
+      - daily_liters
+      - monthly_liters
+      - annual_liters
+      title: ProjectionRange
+    PublicRecordHolder:
+      properties:
+        authority:
+          type: string
+          title: Authority
+        jurisdiction:
+          type: string
+          title: Jurisdiction
+        record_types:
+          items:
+            type: string
+          type: array
+          title: Record Types
+        rationale:
+          type: string
+          title: Rationale
+      type: object
+      required:
+      - authority
+      - jurisdiction
+      - record_types
+      - rationale
+      title: PublicRecordHolder
+    PublicRecordTemplate:
+      properties:
+        facility_id:
+          type: string
+          title: Facility Id
+        authority:
+          type: string
+          title: Authority
+        subject:
+          type: string
+          title: Subject
+        summary:
+          type: string
+          title: Summary
+        requested_records:
+          items:
+            type: string
+          type: array
+          title: Requested Records
+        body:
+          type: string
+          title: Body
+        legal_notes:
+          items:
+            type: string
+          type: array
+          title: Legal Notes
+      type: object
+      required:
+      - facility_id
+      - authority
+      - subject
+      - summary
+      - requested_records
+      - body
+      - legal_notes
+      title: PublicRecordTemplate
+    PublicRecordTemplateResponse:
+      properties:
+        facility_id:
+          type: string
+          title: Facility Id
+        known_holders:
+          items:
+            $ref: '#/components/schemas/PublicRecordHolder'
+          type: array
+          title: Known Holders
+        templates:
+          items:
+            $ref: '#/components/schemas/PublicRecordTemplate'
+          type: array
+          title: Templates
+      type: object
+      required:
+      - facility_id
+      - known_holders
+      - templates
+      title: PublicRecordTemplateResponse
+    RequestLogEntry:
+      properties:
+        request_id:
+          type: string
+          title: Request Id
+        timestamp:
+          type: string
+          format: date-time
+          title: Timestamp
+        method:
+          type: string
+          title: Method
+        path:
+          type: string
+          title: Path
+        status_code:
+          type: integer
+          title: Status Code
+        duration_ms:
+          type: number
+          title: Duration Ms
+        client_ip:
+          type: string
+          title: Client Ip
+        api_key_prefix:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Api Key Prefix
+        rate_limit_class:
+          type: string
+          title: Rate Limit Class
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        region:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Region
+      type: object
+      required:
+      - request_id
+      - timestamp
+      - method
+      - path
+      - status_code
+      - duration_ms
+      - client_ip
+      - rate_limit_class
+      title: RequestLogEntry
+    RequestLogResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/RequestLogEntry'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: RequestLogResponse
+    ReviewDecisionResponse:
+      properties:
+        candidate_id:
+          type: string
+          title: Candidate Id
+        status:
+          type: string
+          title: Status
+        message:
+          type: string
+          title: Message
+      type: object
+      required:
+      - candidate_id
+      - status
+      - message
+      title: ReviewDecisionResponse
+    ReviewListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/CandidateFactResponse'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: ReviewListResponse
+    RouteWorkloadRequest:
+      properties:
+        job_duration_hours:
+          type: number
+          exclusiveMinimum: 0.0
+          title: Job Duration Hours
+        compute_demand_mwh:
+          type: number
+          exclusiveMinimum: 0.0
+          title: Compute Demand Mwh
+        candidate_regions:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          title: Candidate Regions
+      type: object
+      required:
+      - job_duration_hours
+      - compute_demand_mwh
+      - candidate_regions
+      title: RouteWorkloadRequest
+    RouteWorkloadResponse:
+      properties:
+        optimal_region:
+          type: string
+          title: Optimal Region
+        explanation:
+          type: string
+          title: Explanation
+        routing_matrix:
+          items:
+            $ref: '#/components/schemas/RoutingMatrixEntry'
+          type: array
+          title: Routing Matrix
+      type: object
+      required:
+      - optimal_region
+      - explanation
+      - routing_matrix
+      title: RouteWorkloadResponse
+    RoutingMatrixEntry:
+      properties:
+        region:
+          type: string
+          title: Region
+        projected_water_liters:
+          type: number
+          title: Projected Water Liters
+        projected_carbon_g:
+          type: number
+          title: Projected Carbon G
+        water_stress_adjusted_impact_score:
+          type: number
+          title: Water Stress Adjusted Impact Score
+      type: object
+      required:
+      - region
+      - projected_water_liters
+      - projected_carbon_g
+      - water_stress_adjusted_impact_score
+      title: RoutingMatrixEntry
+    SourceConnectorListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/SourceConnectorRecord'
+          type: array
+          title: Items
+        total:
+          type: integer
+          title: Total
+      type: object
+      required:
+      - items
+      - total
+      title: SourceConnectorListResponse
+    SourceConnectorRecord:
+      properties:
+        source_id:
+          type: string
+          title: Source Id
+        publisher:
+          type: string
+          title: Publisher
+        source_type:
+          type: string
+          title: Source Type
+        jurisdiction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Jurisdiction
+        access_method:
+          type: string
+          title: Access Method
+        refresh_cadence:
+          type: string
+          title: Refresh Cadence
+        parser_version:
+          type: string
+          title: Parser Version
+        terms:
+          type: string
+          title: Terms
+        last_successful_fetch:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Successful Fetch
+        last_failure:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Failure
+        checksum_policy:
+          type: string
+          title: Checksum Policy
+        archival_policy:
+          type: string
+          title: Archival Policy
+      type: object
+      required:
+      - source_id
+      - publisher
+      - source_type
+      - access_method
+      - refresh_cadence
+      - parser_version
+      - terms
+      - checksum_policy
+      - archival_policy
+      title: SourceConnectorRecord
+    SourceRecordResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        title:
+          type: string
+          title: Title
+        publisher:
+          type: string
+          title: Publisher
+        source_type:
+          type: string
+          title: Source Type
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          title: Url
+        document_type:
+          type: string
+          title: Document Type
+        publication_date:
+          type: string
+          title: Publication Date
+        retrieved_at:
+          type: string
+          title: Retrieved At
+        license:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: License
+        jurisdiction:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Jurisdiction
+        language:
+          type: string
+          title: Language
+          default: en
+        access_status:
+          type: string
+          title: Access Status
+        parser_version:
+          type: string
+          title: Parser Version
+        ingestion_status:
+          type: string
+          title: Ingestion Status
+        review_status:
+          type: string
+          title: Review Status
+        notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Notes
+        reliability:
+          $ref: '#/components/schemas/SourceReliability'
+      type: object
+      required:
+      - id
+      - title
+      - publisher
+      - source_type
+      - url
+      - document_type
+      - publication_date
+      - retrieved_at
+      - access_status
+      - parser_version
+      - ingestion_status
+      - review_status
+      - reliability
+      title: SourceRecordResponse
+    SourceReliability:
+      properties:
+        score:
+          type: integer
+          title: Score
+        tier:
+          type: string
+          title: Tier
+        explanation:
+          type: string
+          title: Explanation
+      type: object
+      required:
+      - score
+      - tier
+      - explanation
+      title: SourceReliability
+    SourceSummary:
+      properties:
+        total_sources:
+          type: integer
+          title: Total Sources
+        primary_sources:
+          type: integer
+          title: Primary Sources
+        independent_chains:
+          type: integer
+          title: Independent Chains
+        latest_source_date:
+          type: string
+          title: Latest Source Date
+      type: object
+      required:
+      - total_sources
+      - primary_sources
+      - independent_chains
+      - latest_source_date
+      title: SourceSummary
+    StatusResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        service:
+          type: string
+          title: Service
+        version:
+          type: string
+          title: Version
+        environment:
+          type: string
+          title: Environment
+        documentation:
+          type: string
+          title: Documentation
+        openapi:
+          type: string
+          title: Openapi
+      type: object
+      required:
+      - status
+      - service
+      - version
+      - environment
+      - documentation
+      - openapi
+      title: StatusResponse
+    StressMapProperties:
+      properties:
+        provider:
+          type: string
+          title: Provider
+        region_slug:
+          type: string
+          title: Region Slug
+        weighted_impact_score:
+          type: number
+          title: Weighted Impact Score
+        true_green_index:
+          type: number
+          title: True Green Index
+        water_stress_score:
+          type: number
+          title: Water Stress Score
+        water_stress_tier:
+          type: string
+          title: Water Stress Tier
+        current_carbon_intensity_g_per_kwh:
+          type: number
+          title: Current Carbon Intensity G Per Kwh
+        estimated_it_load_mw:
+          type: number
+          title: Estimated It Load Mw
+      type: object
+      required:
+      - provider
+      - region_slug
+      - weighted_impact_score
+      - true_green_index
+      - water_stress_score
+      - water_stress_tier
+      - current_carbon_intensity_g_per_kwh
+      - estimated_it_load_mw
+      title: StressMapProperties
+    StressMapResponse:
+      properties:
+        type:
+          type: string
+          title: Type
+          default: FeatureCollection
+        features:
+          items:
+            $ref: '#/components/schemas/GeoJsonFeature'
+          type: array
+          title: Features
+      type: object
+      required:
+      - features
+      title: StressMapResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    VersionResponse:
+      properties:
+        service:
+          type: string
+          title: Service
+        application_version:
+          type: string
+          title: Application Version
+        model_version:
+          type: string
+          title: Model Version
+        dataset_versions:
+          additionalProperties:
+            type: string
+          type: object
+          title: Dataset Versions
+        generated_at:
+          type: string
+          format: date-time
+          title: Generated At
+      type: object
+      required:
+      - service
+      - application_version
+      - model_version
+      - dataset_versions
+      - generated_at
+      title: VersionResponse
+    WaterMetrics:
+      properties:
+        estimated_it_load_mw:
+          type: number
+          title: Estimated It Load Mw
+        calculated_instant_wue:
+          type: number
+          title: Calculated Instant Wue
+        water_consumption_liters_per_hour:
+          type: number
+          title: Water Consumption Liters Per Hour
+        water_consumption_gallons_per_hour:
+          type: number
+          title: Water Consumption Gallons Per Hour
+        equivalent_household_daily_water_usage:
+          type: number
+          title: Equivalent Household Daily Water Usage
+      type: object
+      required:
+      - estimated_it_load_mw
+      - calculated_instant_wue
+      - water_consumption_liters_per_hour
+      - water_consumption_gallons_per_hour
+      - equivalent_household_daily_water_usage
+      title: WaterMetrics
+    WaterSourceComponent:
+      properties:
+        type:
+          type: string
+          title: Type
+        percent:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Percent
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - type
+      - status
+      title: WaterSourceComponent
+    WeatherSnapshot:
+      properties:
+        dry_bulb_temp_c:
+          type: number
+          title: Dry Bulb Temp C
+        relative_humidity_pct:
+          type: number
+          title: Relative Humidity Pct
+        calculated_wet_bulb_temp_c:
+          type: number
+          title: Calculated Wet Bulb Temp C
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+        quality:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quality
+      type: object
+      required:
+      - dry_bulb_temp_c
+      - relative_humidity_pct
+      - calculated_wet_bulb_temp_c
+      title: WeatherSnapshot
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            requestId:
+              type: string
+          required:
+          - code
+          - message
+          - requestId
+      required:
+      - error
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+servers:
+- url: http://127.0.0.1:8080
+  description: Railway deployment URL placeholder

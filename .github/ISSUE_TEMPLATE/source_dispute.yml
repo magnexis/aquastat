@@ -1,0 +1,27 @@
+name: Source dispute
+description: Report a dispute about provenance, source reliability, citation quality, or evidence classification.
+title: "[Source dispute] "
+labels:
+  - data-quality
+  - documentation
+body:
+  - type: input
+    id: source_id
+    attributes:
+      label: Source ID or URL
+  - type: textarea
+    id: issue
+    attributes:
+      label: Dispute summary
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why the current classification looks wrong
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: Supporting references

@@ -1,0 +1,14 @@
+aws_region           = "us-east-1"
+public_subnet_cidrs  = ["10.42.0.0/24", "10.42.1.0/24"]
+private_subnet_cidrs = ["10.42.10.0/24", "10.42.11.0/24"]
+
+api_image                  = "ghcr.io/example/aquastat-api:latest"
+db_username                = "aquastat_admin"
+db_password                = "replace-me"
+redis_auth_token           = "replace-me-with-32-plus-chars"
+electricity_maps_api_key   = "replace-me"
+api_key_salt               = "replace-me"
+allowed_ingress_cidrs      = ["10.0.0.0/8"]
+api_desired_count          = 2
+db_multi_az                = false
+deletion_protection        = false

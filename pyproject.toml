@@ -1,0 +1,40 @@
+[project]
+name = "aquastat-api"
+version = "0.1.0"
+description = "AquaStat REST API for estimating data center water usage and WUE"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.116.1",
+    "uvicorn[standard]>=0.35.0",
+    "sqlalchemy>=2.0.42",
+    "asyncpg>=0.30.0",
+    "geoalchemy2>=0.17.1",
+    "psycopg[binary]>=3.2.9",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.10.1",
+    "PyYAML>=6.0.2",
+    "cachetools>=5.5.2",
+    "redis>=6.4.0",
+    "dramatiq>=1.18.0",
+    "python-multipart>=0.0.20",
+    "prometheus-client>=0.23.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "flake8>=7.3.0",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

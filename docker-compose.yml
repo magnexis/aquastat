@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: aquastat_db
+    environment:
+      POSTGRES_USER: aquastat_admin
+      POSTGRES_PASSWORD: production_password_secure
+      POSTGRES_DB: aquastat_prod
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aquastat_admin -d aquastat_prod"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aquastat_net
+
+  cache:
+    image: redis:7-alpine
+    container_name: aquastat_cache
+    command: redis-server --requirepass redis_production_password --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aquastat_net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aquastat_api
+    environment:
+      AQUASTAT_DATABASE_URL: postgresql+asyncpg://aquastat_admin:production_password_secure@db:5432/aquastat_prod
+      AQUASTAT_REDIS_URL: redis://:redis_production_password@cache:6379/0
+      AQUASTAT_REDIS_ENABLED: "true"
+      AQUASTAT_BOOTSTRAP_DATABASE_ON_STARTUP: "false"
+      ENVIRONMENT: production
+      PROMETHEUS_MULTIPROC_DIR: /tmp
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+    networks:
+      - aquastat_net
+
+  ingest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aquastat_ingest
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+    command: ["python", "scripts/ingest_worker.py"]
+    environment:
+      AQUASTAT_DATABASE_URL: postgresql+asyncpg://aquastat_admin:production_password_secure@db:5432/aquastat_prod
+      AQUASTAT_REDIS_URL: redis://:redis_production_password@cache:6379/0
+      AQUASTAT_REDIS_ENABLED: "true"
+      AQUASTAT_BOOTSTRAP_DATABASE_ON_STARTUP: "false"
+      ENVIRONMENT: production
+    networks:
+      - aquastat_net
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: aquastat_prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+    networks:
+      - aquastat_net
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  aquastat_net:
+    driver: bridge

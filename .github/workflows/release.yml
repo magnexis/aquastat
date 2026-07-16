@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-release-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            desktop/package-lock.json
+            js-sdk/package-lock.json
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+          pip install build
+
+      - name: Build Python SDK
+        working-directory: sdk
+        run: python -m build
+
+      - name: Build JavaScript SDK
+        working-directory: js-sdk
+        run: npm install && npm run build
+
+      - name: Build desktop bundle
+        working-directory: desktop
+        run: npm ci && npm run build
+
+      - name: Generate OpenAPI artifacts
+        run: python scripts/generate_openapi.py
+
+      - name: Build docs artifact
+        run: python scripts/build_docs_site.py
+
+      - name: Archive release payload
+        run: |
+          mkdir -p release-assets
+          cp -r openapi release-assets/openapi
+          cp -r site release-assets/site
+          cp -r sdk/dist release-assets/python-sdk
+          cp -r js-sdk/dist release-assets/js-sdk
+          cp -r desktop/dist release-assets/desktop
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastat-release-assets
+          path: release-assets
+
+      - name: Attach artifacts to GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            openapi/openapi.json
+            openapi/openapi.yaml

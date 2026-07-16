@@ -1,0 +1,86 @@
+{
+  "info": {
+    "name": "AquaStat API",
+    "_postman_id": "0b10a3f5-1f3f-4c6d-aquastat",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Core AquaStat API requests for health, metadata, and water-footprint estimation."
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Status",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/status"
+      }
+    },
+    {
+      "name": "Info",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/info"
+      }
+    },
+    {
+      "name": "Regions",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "X-API-Key", "value": "{{apiKey}}" }
+        ],
+        "url": "{{baseUrl}}/api/v1/regions"
+      }
+    },
+    {
+      "name": "Estimate",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "X-API-Key", "value": "{{apiKey}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/estimate?provider=aws&region=us-east-1&load_mw=2.5",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "estimate"],
+          "query": [
+            { "key": "provider", "value": "aws" },
+            { "key": "region", "value": "us-east-1" },
+            { "key": "load_mw", "value": "2.5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Route Workload",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-API-Key", "value": "{{apiKey}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"job_duration_hours\": 4,\n  \"compute_demand_mwh\": 12.5,\n  \"candidate_regions\": [\"aws:us-east-1\", \"aws:eu-west-1\"]\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/route-workload"
+      }
+    },
+    {
+      "name": "Unauthorized Example",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/estimate?provider=aws&region=us-east-1"
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "apiKey", "value": "aq_live_replace_me" }
+  ]
+}

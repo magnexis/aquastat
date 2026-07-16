@@ -1,0 +1,10 @@
+{
+  "name": "cycles_of_concentration_case",
+  "evaporation_liters": 1000.0,
+  "cycles_of_concentration": 5.0,
+  "drift_liters": 20.0,
+  "expected_blowdown_liters": 230.0,
+  "tolerance_liters": 0.001,
+  "source": "synthetic benchmark fixture",
+  "methodology_version": "1.0.0"
+}

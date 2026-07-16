@@ -1,0 +1,4 @@
+Synthetic water permit fixture.
+Facility: Synthetic Hyperscale Campus A.
+Reclaimed water share: 70 percent.
+Potable backup share: 30 percent.

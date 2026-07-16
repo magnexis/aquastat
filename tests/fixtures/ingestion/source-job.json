@@ -1,0 +1,6 @@
+{
+  "source_url": "https://example.com/docs/synthetic-campus-a-planning.pdf",
+  "source_type": "planning-application",
+  "dry_run": true,
+  "notes": "Synthetic ingestion fixture"
+}

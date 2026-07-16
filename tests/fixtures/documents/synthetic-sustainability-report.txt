@@ -1,0 +1,4 @@
+Synthetic sustainability report fixture.
+Scope: campus-level environmental metrics for Synthetic Dublin Cloud Campus.
+Reported PUE: 1.17 for reporting year 2025.
+No facility-specific audited annual water consumption reported.

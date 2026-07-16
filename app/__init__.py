@@ -1,0 +1,1 @@
+"""AquaStat application package."""

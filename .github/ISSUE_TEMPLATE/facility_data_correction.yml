@@ -1,0 +1,30 @@
+name: Facility data correction
+description: Report a facility-specific data issue, alias issue, source mismatch, or evidence correction.
+title: "[Facility] "
+labels:
+  - data-quality
+body:
+  - type: input
+    id: facility
+    attributes:
+      label: Facility identifier
+      description: Facility ID, slug, or provider/region if known.
+    validations:
+      required: true
+  - type: textarea
+    id: incorrect
+    attributes:
+      label: What is incorrect
+    validations:
+      required: true
+  - type: textarea
+    id: corrected
+    attributes:
+      label: Suggested correction
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: Provide public sources that support the correction.

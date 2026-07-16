@@ -1,0 +1,10 @@
+{
+  "name": "metered_cooling_tower_case",
+  "withdrawal_liters": 1250.0,
+  "return_flow_liters": 300.0,
+  "storage_change_liters": 50.0,
+  "expected_consumptive_use_liters": 900.0,
+  "tolerance_liters": 0.001,
+  "source": "synthetic benchmark fixture",
+  "methodology_version": "1.0.0"
+}
