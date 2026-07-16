@@ -71,6 +71,7 @@ class ManagedApiKeyRecord(Base):
     allowed_endpoints: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
     allowed_origins: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
     allowed_ips: Mapped[list[str]] = mapped_column(JSON, nullable=False, default=list)
+    project_id: Mapped[str | None] = mapped_column(String(32), nullable=True, index=True)
     usage_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)
     status: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     prefix: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
@@ -173,3 +174,41 @@ class UsageLedgerEntry(Base):
     reason: Mapped[str] = mapped_column(String(120), nullable=False)
     metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+
+
+class BillingProject(Base):
+    __tablename__ = "billing_projects"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    slug: Mapped[str] = mapped_column(String(100), nullable=False, unique=True, index=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    environment: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    monthly_budget_minor: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    soft_budget_minor: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    currency: Mapped[str] = mapped_column(String(8), nullable=False, default="USD")
+    owner_email: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+
+
+class BillingSubscription(Base):
+    __tablename__ = "billing_subscriptions"
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    project_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    plan_slug: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    plan_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
+    billing_cycle: Mapped[str] = mapped_column(String(20), nullable=False, default="monthly")
+    included_requests: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    monthly_price_minor: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    currency: Mapped[str] = mapped_column(String(8), nullable=False, default="USD")
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    renews_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    canceled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    metadata_json: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)

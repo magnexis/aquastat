@@ -53,6 +53,7 @@ class Settings(BaseSettings):
     billing_checkout_base_url: str = "https://aquastat-api.onrender.com"
     billing_session_ttl_minutes: int = 30
     square_environment: Literal["sandbox", "production"] = "sandbox"
+    square_api_version: str = "2026-07-16"
     square_application_id: str | None = None
     square_access_token: str | None = None
     square_location_id: str | None = None

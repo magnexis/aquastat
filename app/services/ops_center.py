@@ -94,6 +94,7 @@ class ManagedApiKeyStore:
             "allowed_endpoints": payload.get("allowed_endpoints", []),
             "allowed_origins": payload.get("allowed_origins", []),
             "allowed_ips": payload.get("allowed_ips", []),
+            "project_id": payload.get("project_id"),
             "usage_limit": payload.get("usage_limit"),
             "status": "active",
             "prefix": raw_key[:12],
@@ -230,6 +231,18 @@ async def build_overview_payload() -> dict[str, Any]:
     total_estimate = round(direct_estimate + indirect_estimate, 1)
     average_per_request = round(total_estimate / successful, 1) if successful else 0.0
     key_total = (await managed_key_store.list())["total"]
+    billing_projects = []
+    billing_alerts: list[str] = []
+    try:
+        from app.services.billing_projects import list_projects, project_usage_summary
+
+        for project in await list_projects():
+            summary = await project_usage_summary(project["id"])
+            billing_projects.append(summary)
+            billing_alerts.extend(alert["message"] for alert in summary.get("alerts", []))
+    except Exception:
+        billing_projects = []
+        billing_alerts = []
 
     return {
         "generated_at": datetime.now(UTC),
@@ -242,6 +255,8 @@ async def build_overview_payload() -> dict[str, Any]:
             {"label": "Total estimated water usage", "value": total_estimate, "unit": "liters"},
             {"label": "Average water per request", "value": average_per_request, "unit": "liters"},
             {"label": "Active API keys", "value": key_total},
+            {"label": "Billing projects", "value": len(billing_projects)},
+            {"label": "Billing alerts", "value": len(billing_alerts)},
             {"label": "Current model version", "value": MODEL_REGISTRY[0]["semantic_version"]},
         ],
         "endpoint_usage": [{"label": key, "value": float(value)} for key, value in endpoint_counts.most_common(8)],
@@ -259,7 +274,7 @@ async def build_overview_payload() -> dict[str, Any]:
         ],
         "recent_alerts": [
             "Operational state now writes through to database storage when drivers and connectivity are available."
-        ],
+        ] + billing_alerts[:5],
         "recent_calculations": recent_calculations,
     }
 

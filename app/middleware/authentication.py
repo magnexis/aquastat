@@ -14,6 +14,7 @@ from app.security import (
     scopes_allow,
 )
 from app.services.ops_center import resolve_managed_api_key
+from app.services.billing import consume_quota_for_key, create_refill_checkout_for_key, is_quota_tracked_path
 
 
 class AuthenticationMiddleware(BaseHTTPMiddleware):
@@ -40,6 +41,7 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
                 request.state.auth_scopes = managed.get("scopes", [])
                 request.state.auth_subject = managed.get("id", "managed-key")
                 request.state.auth_key_prefix = managed.get("prefix")
+                request.state.auth_key_id = managed.get("id")
             elif settings.api_key_hashes:
                 return JSONResponse(
                     status_code=401,
@@ -66,4 +68,41 @@ class AuthenticationMiddleware(BaseHTTPMiddleware):
                 },
             )
 
-        return await call_next(request)
+        if getattr(request.state, "auth_key_id", None) and is_quota_tracked_path(request.url.path):
+            from app.services.billing import quota_summary
+
+            summary = await quota_summary(request.state.auth_key_id)
+            if summary["total_remaining_requests"] <= 0:
+                checkout = await create_refill_checkout_for_key(
+                    request.state.auth_key_id,
+                    client_request_id=getattr(request.state, "request_id", "unknown"),
+                )
+                return JSONResponse(
+                    status_code=402,
+                    content={
+                        "error": {
+                            "code": "QUOTA_EXHAUSTED",
+                            "message": "Included and purchased quota for this API key has been exhausted.",
+                            "requestId": getattr(request.state, "request_id", "unknown"),
+                            "checkoutUrl": checkout.get("checkout_url") if checkout else None,
+                            "checkoutSessionId": checkout.get("session_id") if checkout else None,
+                            "packageSlug": checkout.get("package_slug") if checkout else None,
+                        }
+                    },
+                )
+
+        response = await call_next(request)
+
+        if (
+            getattr(request.state, "auth_key_id", None)
+            and is_quota_tracked_path(request.url.path)
+            and response.status_code < 400
+        ):
+            await consume_quota_for_key(
+                request.state.auth_key_id,
+                getattr(request.state, "auth_key_prefix", "unknown"),
+                getattr(request.state, "request_id", f"req_{request.method.lower()}"),
+                request.url.path,
+            )
+
+        return response

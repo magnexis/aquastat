@@ -89,6 +89,7 @@ PUBLIC_PATHS = {
     "/api/v1/control-center/overview",
     "/api/v1/control-center/models",
     "/api/v2/footprint-calculator",
+    "/api/v1/billing/webhooks/square",
 }
 
 

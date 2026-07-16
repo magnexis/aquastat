@@ -1,4 +1,5 @@
 from aquastat_cli import main as cli_main
+import webbrowser
 
 
 def _fake_request_json(_ctx, method: str, path: str, *, params=None, json_body=None):
@@ -89,3 +90,38 @@ def test_cli_route_workload_json(monkeypatch, capsys) -> None:
     assert exit_code == 0
     output = capsys.readouterr().out
     assert '"optimal_region"' in output
+
+
+def test_cli_opens_checkout_on_quota_exhaustion(monkeypatch, capsys) -> None:
+    def _quota_request(_ctx, method: str, path: str, *, params=None, json_body=None):
+        raise cli_main.CliError(
+            "QUOTA_EXHAUSTED: Included and purchased quota exhausted. Checkout: https://checkout.example",
+            exit_code=4,
+            checkout_url="https://checkout.example",
+        )
+
+    opened: list[str] = []
+
+    def _open(url: str, *_args, **_kwargs):
+        opened.append(url)
+        return True
+
+    monkeypatch.setattr(cli_main, "request_json", _quota_request)
+    monkeypatch.setattr(webbrowser, "open", _open)
+    exit_code = cli_main.main(
+        [
+            "--base-url",
+            "http://testserver",
+            "estimate",
+            "--provider",
+            "aws",
+            "--region",
+            "us-east-1",
+            "--load-mw",
+            "2.5",
+        ]
+    )
+    assert exit_code == 4
+    assert opened == ["https://checkout.example"]
+    stderr = capsys.readouterr().err
+    assert "Opening Square checkout" in stderr

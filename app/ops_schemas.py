@@ -72,6 +72,7 @@ class ManagedApiKeyCreateRequest(BaseModel):
     expires_at: datetime | None = None
     allowed_origins: list[str] = Field(default_factory=list)
     allowed_ips: list[str] = Field(default_factory=list)
+    project_id: str | None = Field(default=None, min_length=1)
     usage_limit: int | None = Field(default=None, ge=1)
 
 
@@ -84,6 +85,7 @@ class ManagedApiKeyResponse(BaseModel):
     allowed_endpoints: list[str]
     allowed_origins: list[str]
     allowed_ips: list[str]
+    project_id: str | None = None
     usage_limit: int | None = None
     status: str
     prefix: str

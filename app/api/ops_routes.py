@@ -319,6 +319,7 @@ CONTROL_CENTER_HTML = """
       <a href="#calculate">Calculate</a>
       <a href="#facilities">Facilities</a>
       <a href="#api-keys">API Keys</a>
+      <a href="#billing">Billing</a>
       <a href="#requests">Requests</a>
       <a href="#models">Models</a>
       <a href="#documentation">Documentation</a>
@@ -438,6 +439,20 @@ CONTROL_CENTER_HTML = """
         </section>
       </section>
 
+      <section class="two" id="billing">
+        <section class="panel">
+          <h2>Billing Projects</h2>
+          <div class="toolbar-row" style="margin-bottom:14px;">
+            <button id="loadBillingProjects">Load billing projects</button>
+          </div>
+          <div class="grid" id="billingProjectsGrid"></div>
+        </section>
+        <section class="panel">
+          <h2>Webhook and Alerts</h2>
+          <pre id="billingOutput">Square/Cash App webhook completions issue prepaid quota after signature verification. Project alerts surface low-credit and budget threshold conditions here once billing activity begins.</pre>
+        </section>
+      </section>
+
       <section class="panel" id="documentation">
         <h2>Documentation and Versioning</h2>
         <p>Interactive API documentation remains available at <code>/docs</code>. AquaStat also exposes <code>/openapi.json</code>, <code>/version</code>, <code>/health</code>, <code>/health/live</code>, and <code>/health/ready</code> for deployment and incident workflows.</p>
@@ -455,6 +470,8 @@ CONTROL_CENTER_HTML = """
     const keysOutput = document.getElementById("keysOutput");
     const requestsOutput = document.getElementById("requestsOutput");
     const modelsOutput = document.getElementById("modelsOutput");
+    const billingProjectsGrid = document.getElementById("billingProjectsGrid");
+    const billingOutput = document.getElementById("billingOutput");
 
     function headers(adminOnly = false) {
       const headers = { "Content-Type": "application/json" };
@@ -539,6 +556,20 @@ CONTROL_CENTER_HTML = """
       keysOutput.textContent = JSON.stringify(payload, null, 2);
     }
 
+    async function loadBillingProjects() {
+      const response = await fetch("/api/v1/billing/projects");
+      const payload = await response.json();
+      billingProjectsGrid.innerHTML = payload.items.map((item) =>
+        `<article class="metric"><div class="label">${item.name}</div><div class="value">${item.subscription ? item.subscription.plan_name : "No plan"}</div><div class="label">${item.currency} budget ${item.monthly_budget_minor ?? 0}</div></article>`
+      ).join("");
+      if (!payload.items.length) {
+        billingProjectsGrid.innerHTML = '<div class="status">No billing projects created yet.</div>';
+      }
+      const usageResponses = await Promise.all(payload.items.map((item) => fetch(`/api/v1/billing/projects/${item.id}/usage`).then((res) => res.json())));
+      const alerts = usageResponses.flatMap((item) => item.alerts || []);
+      billingOutput.textContent = JSON.stringify({ projects: payload.total, alerts }, null, 2);
+    }
+
     function copySnippet(kind) {
       const provider = document.getElementById("provider").value;
       const region = document.getElementById("region").value;
@@ -557,11 +588,13 @@ CONTROL_CENTER_HTML = """
     document.getElementById("loadModels").addEventListener("click", loadModels);
     document.getElementById("createKey").addEventListener("click", createKey);
     document.getElementById("listKeys").addEventListener("click", listKeys);
+    document.getElementById("loadBillingProjects").addEventListener("click", loadBillingProjects);
     document.getElementById("copyCurl").addEventListener("click", () => copySnippet("curl"));
     document.getElementById("copyPython").addEventListener("click", () => copySnippet("python"));
 
     loadOverview();
     loadModels();
+    loadBillingProjects();
   </script>
 </body>
 </html>

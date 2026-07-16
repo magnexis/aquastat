@@ -13,7 +13,22 @@ export class AquaStatDesktopClient {
   private async request<T>(path: string): Promise<T> {
     const response = await fetch(new URL(path, this.baseUrl));
     if (!response.ok) {
-      throw new Error(`AquaStat request failed: ${response.status} ${response.statusText}`);
+      let message = `AquaStat request failed: ${response.status} ${response.statusText}`;
+      if (response.status === 402) {
+        try {
+          const payload = (await response.json()) as {
+            error?: { message?: string; checkoutUrl?: string };
+          };
+          const checkoutUrl = payload.error?.checkoutUrl;
+          message = payload.error?.message ?? message;
+          if (checkoutUrl) {
+            window.open(checkoutUrl, "_blank", "noopener");
+          }
+        } catch {
+          // Keep the fallback message when the response body is not JSON.
+        }
+      }
+      throw new Error(message);
     }
     return (await response.json()) as T;
   }

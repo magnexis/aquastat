@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+import webbrowser
 from dataclasses import dataclass
 from typing import Any
 
@@ -14,9 +15,10 @@ DEFAULT_BASE_URL = "https://aquastat-api.onrender.com"
 
 
 class CliError(Exception):
-    def __init__(self, message: str, exit_code: int = 1) -> None:
+    def __init__(self, message: str, exit_code: int = 1, *, checkout_url: str | None = None) -> None:
         super().__init__(message)
         self.exit_code = exit_code
+        self.checkout_url = checkout_url
 
 
 @dataclass
@@ -100,10 +102,16 @@ def request_json(ctx: CliContext, method: str, path: str, *, params: dict[str, A
             error = payload.get("error", {})
             message = error.get("message") or response.text
             code = error.get("code") or f"HTTP_{response.status_code}"
+            checkout_url = error.get("checkoutUrl")
         except ValueError:
             message = response.text
             code = f"HTTP_{response.status_code}"
-        raise CliError(f"{code}: {message}", exit_code=4 if response.status_code == 402 else 3)
+            checkout_url = None
+        raise CliError(
+            f"{code}: {message}" + (f" Checkout: {checkout_url}" if checkout_url else ""),
+            exit_code=4 if response.status_code == 402 else 3,
+            checkout_url=checkout_url,
+        )
 
     try:
         return response.json()
@@ -299,6 +307,12 @@ def main(argv: list[str] | None = None) -> int:
     try:
         output = dispatch(ctx, args)
     except CliError as exc:
+        if exc.exit_code == 4 and exc.checkout_url:
+            try:
+                webbrowser.open(exc.checkout_url)
+                print(f"Opening Square checkout: {exc.checkout_url}", file=sys.stderr)
+            except Exception:
+                print(f"Square checkout: {exc.checkout_url}", file=sys.stderr)
         print(f"Error: {exc}", file=sys.stderr)
         return exc.exit_code
     print(output)
