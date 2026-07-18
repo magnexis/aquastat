@@ -174,6 +174,20 @@ class FootprintBreakdownEntry(BaseModel):
     estimated_water_liters: float
 
 
+class AIEstimateRequest(BaseModel):
+    model_class: str = Field(min_length=1)
+    token_count: int = Field(gt=0)
+    response_type: str = Field(min_length=1)
+    estimated_watt_hours: float = Field(gt=0)
+    region: str = Field(min_length=1)
+
+
+class AIEstimateResponse(BaseModel):
+    direct_water_liters: float
+    indirect_water_liters: float
+    uncertainty: float
+
+
 class FootprintResponse(BaseModel):
     summary: FootprintSummary
     breakdown: list[FootprintBreakdownEntry]
