@@ -4,7 +4,15 @@ from fastapi import APIRouter, HTTPException, Query, status
 
 from app.core.config import settings
 from app.repository import get_region, list_regions
-from app.schemas import DataCenterSummary, EstimateDataCenter, EstimateResponse, WaterMetrics, WeatherSnapshot
+from app.schemas import (
+    AIEstimateRequest,
+    AIEstimateResponse,
+    DataCenterSummary,
+    EstimateDataCenter,
+    EstimateResponse,
+    WaterMetrics,
+    WeatherSnapshot,
+)
 from app.services.thermodynamics import (
     calculate_dynamic_wue,
     calculate_water_consumption_lph,
@@ -14,6 +22,18 @@ from app.services.weather import WeatherServiceError, fetch_current_weather
 
 
 router = APIRouter()
+
+
+@router.post("/ai-inference-estimate", response_model=AIEstimateResponse)
+async def ai_inference_estimate(payload: AIEstimateRequest) -> AIEstimateResponse:
+    direct = payload.estimated_watt_hours * 0.0005
+    indirect = payload.estimated_watt_hours * 0.0012
+    uncertainty = 0.15
+    return AIEstimateResponse(
+        direct_water_liters=round(direct, 4),
+        indirect_water_liters=round(indirect, 4),
+        uncertainty=uncertainty,
+    )
 
 
 @router.get("/regions", response_model=list[DataCenterSummary])
